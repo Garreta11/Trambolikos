@@ -90,19 +90,7 @@
       background: linear-gradient(90deg, rgba(247, 37, 133, 0.15) 0%, rgba(247, 37, 133, 0.02) 100%);
       border-left: 4px solid var(--color-pink);
       position: relative;
-      
-      &::after {
-        content: "TU CLUB";
-        position: absolute;
-        right: 1rem;
-        top: -8px;
-        background: var(--color-pink);
-        color: white;
-        font-size: 0.6rem;
-        padding: 2px 6px;
-        font-weight: 900;
-        letter-spacing: 0.1em;
-      }
+    
 
       .standings__teamName {
         color: white;

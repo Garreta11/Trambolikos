@@ -28,7 +28,7 @@ const Media = () => {
   if (!data || !data.videoGallery) return null;
 
   return (
-    <section className={styles.media}>
+    <section className={styles.media} id="media">
       <header className={styles.media__header}>
         <div className={styles.media__titleGroup}>
           <span className={styles.media__badge}>Trambolikos TV</span>

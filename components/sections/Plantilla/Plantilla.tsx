@@ -36,7 +36,7 @@ const Plantilla = () => {
   };
 
   return (
-    <section className={styles.roster}>
+    <section className={styles.roster} id="plantilla">
       <header className={styles.roster__header}>
         <div className={styles.roster__titleGroup}>
           <span className={styles.roster__subtitle}>Temporada 2026</span>

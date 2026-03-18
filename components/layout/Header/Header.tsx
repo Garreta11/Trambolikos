@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import styles from "./Header.module.scss";
+import { lenisInstance } from "@/components/layout/SmoothScroll";
 
 const Header = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -24,6 +25,18 @@ const Header = () => {
     window.addEventListener("scroll", controlNavbar);
     return () => window.removeEventListener("scroll", controlNavbar);
   }, [lastScrollY]);
+
+  // New: Click handler for smooth scrolling
+  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault(); // Stop the default "jump" behavior
+    
+    if (lenisInstance) {
+      lenisInstance.scrollTo(`#${id.toLowerCase()}`, {
+        offset: -80, // Offset for your fixed header height
+        lerp: 0.1,
+      });
+    }
+  };
 
   return (
     <nav
@@ -146,11 +159,12 @@ const Header = () => {
         </div>
 
         <div className={styles.nav__menu}>
-          {["Resultados", "Partidos", "Plantilla", "Stats", "Media"].map((item) => (
+          {["Partidos", "Plantilla", "Clasificación", "Media"].map((item) => (
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
               className={styles.nav__link}
+              onClick={(e) => handleScrollTo(e, item)}
             >
               {item}
             </a>

@@ -1,8 +1,21 @@
 "use client";
 import styles from "./Footer.module.scss";
+import { lenisInstance } from "@/components/layout/SmoothScroll";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+
+  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault(); // Stop the default "jump" behavior
+    
+    if (lenisInstance) {
+      lenisInstance.scrollTo(`#${id.toLowerCase()}`, {
+        offset: -80, // Offset for your fixed header height
+        lerp: 0.1,
+      });
+    }
+  };
+
 
   return (
     <footer className={styles.footer}>
@@ -128,8 +141,8 @@ const Footer = () => {
               Nacidos en el barro, destinados al neón.
             </p>
             <div className={styles.footer__socials}>
-              {['Instagram', 'Twitter', 'Twitch', 'YouTube'].map((social) => (
-                <a key={social} href="#" className={styles.footer__socialLink}>
+              {['TikTok'].map((social) => (
+                <a key={social} target="_blank" href="https://www.tiktok.com/@trambosfc" className={styles.footer__socialLink}>
                   <span className={styles.footer__socialDot}></span>
                   {social}
                 </a>
@@ -142,17 +155,17 @@ const Footer = () => {
             <div className={styles.footer__group}>
               <h4 className={styles.footer__groupTitle}>Club</h4>
               <nav className={styles.footer__nav}>
-                <a href="#historia" className={styles.footer__link}>Historia</a>
-                <a href="#plantilla" className={styles.footer__link}>Plantilla</a>
-                <a href="#estadio" className={styles.footer__link}>El Estadio</a>
+                <a href="#plantilla" className={styles.footer__link} onClick={(e) => handleScrollTo(e, "plantilla")}>Plantilla</a>
+                <a href="#media" className={styles.footer__link} onClick={(e) => handleScrollTo(e, "media")}>Media</a>
+                <a href="#historia" className={styles.footer__link} onClick={(e) => handleScrollTo(e, "historia")}>Historia</a>
+                <a href="#estadio" className={styles.footer__link} onClick={(e) => handleScrollTo(e, "estadio")}>El Estadio</a>
               </nav>
             </div>
             <div className={styles.footer__group}>
               <h4 className={styles.footer__groupTitle}>Competición</h4>
               <nav className={styles.footer__nav}>
-                <a href="#partidos" className={styles.footer__link}>Calendario</a>
-                <a href="#clasificacion" className={styles.footer__link}>Clasificación</a>
-                <a href="#stats" className={styles.footer__link}>Estadísticas</a>
+                <a href="#partidos" className={styles.footer__link} onClick={(e) => handleScrollTo(e, "partidos")}>Partidos</a>
+                <a href="#clasificación" className={styles.footer__link} onClick={(e) => handleScrollTo(e, "clasificación")}>Clasificación</a>
               </nav>
             </div>
           </div>

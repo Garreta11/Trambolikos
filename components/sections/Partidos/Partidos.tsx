@@ -65,7 +65,7 @@ const Partidos = () => {
   );
 
   return (
-    <section className={styles.matches}>
+    <section className={styles.matches} id="partidos">
       <div className={styles.matches__glow} />
       
       <div className={styles.matches__wrapper}>

@@ -20,7 +20,7 @@ const Clasificacion = () => {
   if (!standings) return null;
 
   return (
-    <section className={styles.standings}>
+    <section className={styles.standings} id="clasificación">
       <header className={styles.standings__header}>
         <div className={styles.standings__titleWrapper}>
           <h2 className={styles.standings__title}>Tabla de Posiciones</h2>
