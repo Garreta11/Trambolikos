@@ -1,0 +1,198 @@
+.matches {
+  position: relative;
+  width: 100%;
+  padding: 6rem 1rem;
+  background-color: var(--color-dark);
+  overflow: hidden;
+
+  &__glow {
+    position: absolute;
+    top: 20%;
+    right: -10%;
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, rgba(247, 37, 133, 0.08) 0%, transparent 70%);
+    filter: blur(100px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  &__wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 80rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
+  }
+
+  &__header {
+    margin-bottom: 2rem;
+    border-left: 4px solid var(--color-pink);
+    padding-left: 1.5rem;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin: 0;
+    color: var(--text-white);
+
+    &--muted {
+      color: var(--text-gray-500);
+      opacity: 0.7;
+    }
+  }
+
+  &__liveDot {
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-pink);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--color-pink);
+    animation: pulse-red 2s infinite;
+  }
+
+  &__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__card {
+    background: rgba(255, 255, 255, 0.02);
+    display: grid;
+    // Strict 3-column layout: Fixed ends, fluid center
+    grid-template-columns: 120px 1fr 120px; 
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    clip-path: polygon(2% 0, 100% 0, 98% 100%, 0% 100%);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--color-pink);
+    }
+  }
+
+  // Column Left: Date info
+  &__columnLeft {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  // Column Center: TeamA - Score - TeamB
+  &__columnCenter {
+    display: grid;
+    // Ensures the ScoreBox is exactly in the middle
+    grid-template-columns: 1fr 140px 1fr; 
+    align-items: center;
+    gap: 1rem;
+    padding: 0 2rem;
+  }
+
+  // Column Right: Status
+  &__columnRight {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__teamName {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    color: var(--text-gray-500);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &--left { text-align: right; }
+    &--right { text-align: left; }
+    
+    &--highlight {
+      color: var(--text-white);
+      font-weight: 800;
+    }
+  }
+
+  &__scoreBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__score {
+    font-family: var(--font-mega);
+    font-size: 2.8rem;
+    color: var(--color-pink);
+    text-shadow: 0 0 15px rgba(247, 37, 133, 0.4);
+    letter-spacing: -2px;
+  }
+
+  &__vsBadge {
+    background: var(--color-pink);
+    color: white;
+    font-family: var(--font-display);
+    padding: 0.4rem 1.2rem;
+    font-size: 0.8rem;
+    font-weight: 900;
+    font-style: italic;
+    transform: skewX(-15deg);
+  }
+
+  &__tagHome, &__tagAway {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 5px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    width: 90px;
+    text-align: center;
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+  }
+
+  &__tagHome { background: var(--color-pink); color: white; }
+  &__tagAway { border: 1px solid var(--text-gray-600); color: var(--text-gray-400); }
+}
+
+// Responsive: Stack them vertically on mobile
+@media (max-width: 992px) {
+  .matches__card {
+    grid-template-columns: 1fr;
+    clip-path: none;
+    gap: 1.5rem;
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+
+  .matches__columnLeft {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
+    align-items: center;
+  }
+
+  .matches__columnCenter {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0;
+
+    .matches__teamName--left { text-align: center; order: 1; }
+    .matches__scoreBox { order: 2; }
+    .matches__teamName--right { text-align: center; order: 3; }
+  }
+
+  .matches__columnRight {
+    justify-content: center;
+    order: 4;
+  }
+}

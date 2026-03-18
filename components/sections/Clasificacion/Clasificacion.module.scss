@@ -1,0 +1,199 @@
+.standings {
+  max-width: 80rem;
+  margin: 6rem auto;
+  padding: 0 1.5rem;
+
+  &__header {
+    margin-bottom: 3rem;
+  }
+
+  &__titleWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-gray-500);
+    letter-spacing: 0.2em;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-pink);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--color-pink);
+    animation: blink 2s infinite;
+  }
+
+  &__container {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    overflow-x: auto;
+    backdrop-filter: blur(10px);
+    scrollbar-width: none; // Ocultar scroll en Firefox
+    &::-webkit-scrollbar { display: none; } // Ocultar scroll en Chrome
+  }
+
+  &__table {
+    min-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__row {
+    display: grid;
+    // Pos | Team | PJ | G | E | P | GF | GC | PTS
+    grid-template-columns: 3.5rem 1fr repeat(6, 3.5rem) 5rem;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+
+    &:not(&--head):hover {
+      background: rgba(255, 255, 255, 0.04);
+      transform: translateX(5px);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &--head {
+      background: transparent;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-gray-500);
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      margin-bottom: 0.5rem;
+    }
+
+    &--highlight {
+      background: linear-gradient(90deg, rgba(247, 37, 133, 0.15) 0%, rgba(247, 37, 133, 0.02) 100%);
+      border-left: 4px solid var(--color-pink);
+      position: relative;
+      
+      &::after {
+        content: "TU CLUB";
+        position: absolute;
+        right: 1rem;
+        top: -8px;
+        background: var(--color-pink);
+        color: white;
+        font-size: 0.6rem;
+        padding: 2px 6px;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+      }
+
+      .standings__teamName {
+        color: white;
+        font-weight: 800;
+      }
+      .standings__cell--points {
+        color: var(--color-pink);
+        text-shadow: 0 0 10px rgba(247, 37, 133, 0.5);
+      }
+    }
+  }
+
+  &__cell {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-gray-400);
+
+    &--team {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      text-align: left;
+      justify-content: flex-start;
+      color: var(--text-white);
+    }
+
+    &--points {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: white;
+    }
+  }
+
+  &__logo {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+    
+    img { object-fit: contain; }
+  }
+
+  &__rank {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--text-gray-500);
+    font-size: 1.1rem;
+  }
+
+  &__teamName {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+// Mobile
+@media (max-width: 768px) {
+  .standings {
+    &__container {
+      padding: 0.5rem;
+    }
+    
+    &__table {
+      min-width: 100%;
+    }
+
+    &__cell--hideMobile {
+      display: none;
+    }
+
+    &__row {
+      grid-template-columns: 2.5rem 1fr repeat(4, 2.8rem) 3.5rem;
+      padding: 0.75rem 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    &__teamName {
+      font-size: 0.85rem;
+    }
+    
+    &__logo {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}

@@ -1,0 +1,137 @@
+.nav {
+  // Propiedades base del Bloque
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.3s ease,
+              padding 0.3s ease;
+
+  // --- MODIFICADORES ---
+  &--default {
+    padding: 2rem 0;
+    background: transparent;
+  }
+
+  &--scrolled {
+    padding: 1rem 0;
+    background: rgba(0, 0, 0, 0.8); // Ajusta según tu var(--color-dark)
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    .nav__bottomLine {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  &--visible {
+    transform: translateY(0);
+  }
+
+  &--hidden {
+    transform: translateY(-100%);
+  }
+
+  // --- ELEMENTOS ---
+  &__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+  }
+
+  &__logoIcon {
+    width: 38px;
+    height: 38px;
+    background: var(--color-pink);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mega);
+    font-size: 1.4rem;
+    color: white;
+    transform: skewX(-10deg);
+    box-shadow: 0 0 15px rgba(247, 37, 133, 0.3);
+  }
+
+  &__logoText {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    font-style: italic;
+    color: var(--text-white);
+    margin: 0;
+  }
+
+  &__logoTextPink {
+    color: var(--color-pink);
+  }
+
+  &__menu {
+    display: none;
+    gap: 2.5rem;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
+  }
+
+  &__link {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-gray-400);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--color-pink);
+      transition: width 0.3s ease;
+    }
+
+    &:hover {
+      color: var(--text-white);
+      &::after { width: 100%; }
+    }
+  }
+
+  &__cta {
+    display: flex;
+    align-items: center;
+  }
+
+  &__bottomLine {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-pink), transparent);
+    opacity: 0;
+    transform: scaleX(0);
+    transition: all 0.6s ease;
+  }
+}

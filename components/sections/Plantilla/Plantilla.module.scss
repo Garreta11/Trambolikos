@@ -1,0 +1,214 @@
+.roster {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 8rem 2rem;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 6rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 2rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+  }
+
+  &__titleGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__subtitle {
+    font-family: var(--font-display);
+    color: var(--color-pink);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: 2.5rem; // Mucho más contenido y elegante
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  &__line {
+    width: 150px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--color-pink), transparent);
+    margin-bottom: 0.5rem;
+  }
+
+  &__section {
+    margin-bottom: 8rem;
+  }
+
+  &__sectionTitle {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--text-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+
+    &::before {
+      content: "[";
+      margin-right: 0.5rem;
+      color: var(--color-pink);
+    }
+    &::after {
+      content: "]";
+      margin-left: 0.5rem;
+      color: var(--color-pink);
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 3rem;
+  }
+}
+
+.playerCard {
+  position: relative;
+  background: transparent;
+  transition: all 0.4s ease;
+
+  &:hover {
+    .playerCard__image { filter: grayscale(1) brightness(0.3); transform: scale(1.05); }
+    .playerCard__video { opacity: 1; }
+    .playerCard__stats { opacity: 1; transform: translateY(0); }
+    .playerCard__number { color: var(--color-pink); text-shadow: 0 0 15px var(--color-pink); }
+  }
+
+  &__media {
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: #111;
+    border-radius: 2px;
+  }
+
+  &__image {
+    object-fit: cover;
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+  }
+
+  &__stats {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    // degradado oscuro más alto para proteger el texto
+    background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 50%, transparent 100%);
+    
+    // Cambiamos a FLEX vertical para que fluyan hacia abajo
+    display: flex;
+    flex-direction: column; 
+    gap: 0.15rem; // Espacio entre cada stat
+    
+    // Padding generoso pero controlado
+    /* padding: 2rem 1.5rem 1.5rem;  */
+    
+    z-index: 5;
+    opacity: 0; // Oculto por defecto
+    transform: translateY(15px); // Animación de subida
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    pointer-events: none; // No interfiere con clics
+  }
+
+  &__statItem {
+    // Diseño de "fila técnica"
+    display: flex;
+    justify-content: space-between; // Etiqueta a la izq, Valor a la der
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); // Línea sutil divisoria
+    /* padding-bottom: 0.5rem; */
+    padding: .25rem 1rem 1rem; 
+
+    &:last-child {
+      border-bottom: none; // Quitar línea en el último elemento
+    }
+  }
+
+  &__statLabel {
+    font-size: 0.7rem; // Un poco más grande para legibilidad
+    color: var(--color-pink);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    flex: 1; // Toma el espacio disponible
+    overflow: hidden;
+    margin-right: 1rem;
+  }
+
+  &__statValue {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 700;
+    text-align: right;
+    flex-shrink: 0; // No se encoge
+  }
+
+  &__info {
+    margin-top: 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  &__number {
+    font-family: var(--font-mega);
+    font-size: 2.5rem;
+    line-height: 0.8;
+    color: var(--text-gray-600);
+    transition: all 0.3s ease;
+  }
+
+  &__nameWrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  &__pos {
+    font-size: 0.7rem;
+    color: var(--color-pink);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+}
