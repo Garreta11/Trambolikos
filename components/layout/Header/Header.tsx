@@ -8,13 +8,14 @@ const Header = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const controlNavbar = () => {
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 50);
 
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      if (currentScrollY > lastScrollY && currentScrollY > 100 && !isMenuOpen) {
         setIsVisible(false);
       } else {
         setIsVisible(true);
@@ -24,7 +25,15 @@ const Header = () => {
 
     window.addEventListener("scroll", controlNavbar);
     return () => window.removeEventListener("scroll", controlNavbar);
-  }, [lastScrollY]);
+  }, [lastScrollY, isMenuOpen]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      lenisInstance?.stop();
+    } else {
+      lenisInstance?.start();
+    }
+  }, [isMenuOpen]);
 
   // New: Click handler for smooth scrolling
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -158,7 +167,8 @@ const Header = () => {
           </div>
         </div>
 
-        <div className={styles.nav__menu}>
+        {/* Desktop & Mobile Menu */}
+        <div className={`${styles.nav__menu} ${isMenuOpen ? styles["nav__menu--open"] : ""}`}>
           {["Partidos", "Plantilla", "Clasificación", "Media"].map((item) => (
             <a
               key={item}
@@ -169,11 +179,26 @@ const Header = () => {
               {item}
             </a>
           ))}
+          {/* CTA duplicated for mobile view visibility if needed */}
+          <button className={`${styles.nav__mobileOnly} btn-primary`}>Comprar entradas</button>
         </div>
 
-        <div className={styles.nav__cta}>
-          <button className="btn-primary" style={{ padding: '8px 20px', fontSize: '11px' }}>
-            Comprar entradas
+        <div className={styles.nav__actions}>
+          <div className={styles.nav__cta}>
+            <button className="btn-primary" style={{ padding: '8px 20px', fontSize: '11px' }}>
+              Comprar entradas
+            </button>
+          </div>
+
+          {/* Burger Button */}
+          <button 
+            className={`${styles.nav__burger} ${isMenuOpen ? styles["nav__burger--open"] : ""}`}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle Menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
           </button>
         </div>
       </div>

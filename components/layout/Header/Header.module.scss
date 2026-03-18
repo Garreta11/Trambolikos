@@ -1,5 +1,4 @@
 .nav {
-  // Propiedades base del Bloque
   width: 100%;
   position: fixed;
   top: 0;
@@ -17,7 +16,7 @@
 
   &--scrolled {
     padding: 1rem 0;
-    background: rgba(0, 0, 0, 0.8); // Ajusta según tu var(--color-dark)
+    background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 
@@ -35,6 +34,13 @@
     transform: translateY(-100%);
   }
 
+  &__mobileOnly {
+    display: none;
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+
   // --- ELEMENTOS ---
   &__container {
     max-width: 1280px;
@@ -50,21 +56,7 @@
     align-items: center;
     gap: 1rem;
     cursor: pointer;
-  }
-
-  &__logoIcon {
-    width: 38px;
-    height: 38px;
-    background: var(--color-pink);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mega);
-    font-size: 1.4rem;
-    color: white;
-    transform: skewX(-10deg);
-    box-shadow: 0 0 15px rgba(247, 37, 133, 0.3);
+    z-index: 1100; // Above the mobile menu
   }
 
   &__logoText {
@@ -81,12 +73,40 @@
     color: var(--color-pink);
   }
 
+  // --- MENU LOGIC ---
   &__menu {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 2.5rem;
+    
+    // Mobile Overlay State
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100dvh;
+    background: rgba(0, 0, 0, 1);
+    backdrop-filter: blur(15px);
+    transform: translateX(100%);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1050;
 
+    &--open {
+      transform: translateX(0);
+    }
+
+    // Desktop Reset
     @media (min-width: 768px) {
-      display: flex;
+      position: static;
+      flex-direction: row;
+      width: auto;
+      height: auto;
+      background: transparent;
+      backdrop-filter: none;
+      transform: translateX(0);
+      transition: none;
     }
   }
 
@@ -94,12 +114,16 @@
     font-family: var(--font-display);
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    font-size: 0.85rem;
+    font-size: 1.5rem; // Large for mobile tap targets
     font-weight: 600;
     color: var(--text-gray-400);
     text-decoration: none;
     transition: all 0.2s ease;
     position: relative;
+
+    @media (min-width: 768px) {
+      font-size: 0.85rem;
+    }
 
     &::after {
       content: '';
@@ -118,9 +142,61 @@
     }
   }
 
-  &__cta {
+  &__actions {
     display: flex;
     align-items: center;
+    gap: 1.5rem;
+    z-index: 1100;
+  }
+
+  &__cta {
+    display: none; // Hide on mobile to keep it clean
+
+    @media (min-width: 768px) {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  // --- BURGER ICON ---
+  &__burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1100;
+
+    span {
+      width: 100%;
+      height: 2px;
+      background-color: var(--text-white);
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+
+    &--open {
+      span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+        background-color: var(--color-pink);
+      }
+      span:nth-child(2) {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+        background-color: var(--color-pink);
+      }
+    }
+
+    @media (min-width: 768px) {
+      display: none;
+    }
   }
 
   &__bottomLine {

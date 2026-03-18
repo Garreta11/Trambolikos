@@ -24,6 +24,11 @@
   --font-mega: 'Anton', sans-serif;
   --font-display: 'Barlow Condensed', sans-serif;
   --font-body: 'Outfit', system-ui, sans-serif;
+
+  // Breakpoints (Internal helper)
+  --bp-mobile: 480px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1024px;
 }
 
 // 2. ANIMATIONS
@@ -47,12 +52,23 @@
 // 3. BASE STYLES
 // -----------------------------------------------------------------------------
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  // Fixes potential horizontal overflow on mobile from animations
+  overflow-x: hidden; 
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--color-dark);
   color: var(--text-white);
   font-family: var(--font-body);
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 
   // Grain noise overlay effect
   &::after {
@@ -84,75 +100,67 @@ body {
 // 5. COMPONENTS
 // -----------------------------------------------------------------------------
 
-// Buttons
-.btn-primary {
+// Buttons: Optimized for Touch
+.btn-primary, .btn-secondary {
   @include flex-center;
-  background: var(--color-pink);
-  color: var(--text-white);
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  padding: 12px 28px;
+  @include transition-standard;
+  padding: 14px 32px; // Slightly taller for better touch target on mobile
   border-radius: 9999px;
   text-transform: uppercase;
-  transition: transform 0.15s, box-shadow 0.2s;
-  border: none;
+  font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+
+  @media (min-width: 1024px) {
+    padding: 12px 28px; // Original desktop size
+  }
+}
+
+.btn-primary {
+  background: var(--color-pink);
+  color: var(--text-white);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  border: none;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 36px rgba(247, 37, 133, 0.4);
+    @media (min-width: 1024px) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(247, 37, 133, 0.4);
+    }
   }
+  
+  &:active { transform: scale(0.96); } // Feedback for mobile tap
 }
 
 .btn-secondary {
-  @include flex-center;
   border: 1.5px solid rgba(255, 255, 255, 0.18);
   color: rgba(255, 255, 255, 0.7);
-  font-weight: 600;
   font-size: 11px;
   letter-spacing: 0.12em;
-  padding: 12px 28px;
-  border-radius: 9999px;
-  text-transform: uppercase;
   background: transparent;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
 
   &:hover {
-    border-color: var(--color-pink);
-    color: var(--text-white);
-    background: rgba(247, 37, 133, 0.08);
+    @media (min-width: 1024px) {
+      border-color: var(--color-pink);
+      color: var(--text-white);
+      background: rgba(247, 37, 133, 0.08);
+    }
   }
-}
-
-// Badges
-.badge-pink {
-  background: var(--color-pink);
-  color: var(--text-white);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  padding: 2px 7px;
-  text-transform: uppercase;
-}
-
-.badge-away {
-  border: 1px solid var(--text-subtle);
-  color: var(--text-muted);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  padding: 2px 7px;
-  text-transform: uppercase;
 }
 
 // Navigation
 .nav-link {
   position: relative;
-  font-size: 13px;
+  font-size: 14px; // Bumped up from 13px for mobile legibility
   color: var(--text-gray-400);
   text-decoration: none;
   transition: color 0.2s;
+
+  @media (min-width: 1024px) {
+    font-size: 13px;
+  }
 
   &::after {
     content: '';
@@ -171,67 +179,70 @@ body {
   }
 }
 
-// Ticker (Marquee)
+// Ticker (Optimized for Mobile Performance)
 .ticker-container {
   overflow: hidden;
   background: var(--color-pink);
-  padding: 11px 0;
+  padding: 8px 0; // Tighter for mobile
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
+
+  @media (min-width: 1024px) {
+    padding: 11px 0;
+  }
 
   .ticker-track {
     display: flex;
     white-space: nowrap;
-    animation: ticker 28s linear infinite;
+    animation: ticker 20s linear infinite; // Faster on mobile feels more "live"
+
+    @media (min-width: 1024px) {
+      animation-duration: 28s;
+    }
 
     &:hover { animation-play-state: paused; }
 
     span {
       font-family: var(--font-display);
-      font-size: 15px;
+      font-size: 13px; // Smaller for mobile
       font-weight: 700;
       letter-spacing: 0.06em;
       color: var(--text-white);
+      padding: 0 1rem;
+
+      @media (min-width: 1024px) {
+        font-size: 15px;
+        padding: 0 2rem;
+      }
     }
   }
 }
 
-// Fixture Cards
+// Fixture Cards (Responsive Logic)
 .fixture-card {
   background: var(--color-dark-card);
   border-left: 2px solid var(--color-border);
   display: flex;
+  flex-direction: column; // Stack on mobile
   transition: border-color 0.2s, background 0.2s;
 
-  &:hover { background: rgba(255, 255, 255, 0.025); }
+  @media (min-width: 768px) {
+    flex-direction: row; // Row on tablet/desktop
+  }
+
+  &:hover { 
+    @media (min-width: 1024px) {
+      background: rgba(255, 255, 255, 0.025); 
+    }
+  }
 
   &.home {
     border-left-color: var(--color-pink);
-    &:hover { background: rgba(247, 37, 133, 0.04); }
-  }
-}
-
-// Player Card
-.player-card {
-  background: var(--color-dark-card);
-  border: 1px solid var(--color-border);
-  overflow: hidden;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    .player-overlay { opacity: 1; }
-  }
-
-  .player-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(var(--color-pink-dark), 0.85);
-    @include flex-center;
-    flex-direction: column;
-    gap: 8px;
-    opacity: 0;
-    transition: opacity 0.28s;
+    &:hover { 
+      @media (min-width: 1024px) {
+        background: rgba(247, 37, 133, 0.04); 
+      }
+    }
   }
 }
 
@@ -240,26 +251,30 @@ body {
 
 .stripe-bg {
   background-image: repeating-linear-gradient(
-    -60deg, transparent, transparent 40px,
-    rgba(247, 37, 133, 0.025) 40px, rgba(247, 37, 133, 0.025) 41px
+    -60deg, transparent, transparent 20px, // Tighter stripes for mobile
+    rgba(247, 37, 133, 0.025) 20px, rgba(247, 37, 133, 0.025) 21px
   );
-}
 
-.pink-rule {
-  height: 1px;
-  background: linear-gradient(90deg, var(--color-pink), transparent);
-}
-
-.glow-ring {
-  animation: ring-pulse 4s ease-in-out infinite;
-  background: radial-gradient(circle, var(--color-pink) 0%, transparent 65%);
+  @media (min-width: 1024px) {
+    background-image: repeating-linear-gradient(
+      -60deg, transparent, transparent 40px,
+      rgba(247, 37, 133, 0.025) 40px, rgba(247, 37, 133, 0.025) 41px
+    );
+  }
 }
 
 .text-mega { 
   font-family: var(--font-mega);
-  font-size: clamp(5rem, 16vw, 13.5rem);
+  font-size: clamp(3.5rem, 15vw, 13.5rem); // Adjusted minimum for mobile
   line-height: 0.86;
   letter-spacing: -0.01em;
 }
-.text-display { font-family: var(--font-display); }
-.text-pink { color: var(--color-pink); }
+
+// Helper to hide content only on mobile or only on desktop
+.hide-mobile {
+  @media (max-width: 768px) { display: none !important; }
+}
+
+.show-mobile {
+  @media (min-width: 769px) { display: none !important; }
+}

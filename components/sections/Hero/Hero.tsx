@@ -18,11 +18,11 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className={styles.hero}>
-      {/* Dynamic Background Glows */}
+    <section className={styles.hero}>
       <div className={styles.hero__glow} />
       
-      <svg className={styles.hero__pitch} viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+      {/* Added aria-hidden to the decorative SVG */}
+      <svg className={styles.hero__pitch} viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         <defs>
           <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -86,7 +86,7 @@ const Hero = () => {
           <p className={styles.hero__description}>{hero?.description}</p>
 
           <div className={styles.hero__ctas}>
-            {hero?.ctas.map((cta) => (
+            {hero?.ctas?.map((cta) => (
               <a 
                 key={cta.label} 
                 href={cta.link} 
@@ -102,15 +102,16 @@ const Hero = () => {
           <div className={styles.hero__logoContainer}>
             <Image 
               src={urlFor(hero.logo).url()} 
-              alt="Logo" 
-              width={400} 
-              height={400} 
+              alt="Club Logo" 
+              width={500} 
+              height={500} 
+              priority // Crucial for Hero images
               className={styles.hero__logo}
             />
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 };
 

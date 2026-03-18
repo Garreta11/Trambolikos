@@ -1,13 +1,12 @@
 .hero {
   position: relative;
-  max-width: 80rem;
+  width: 100%;
   min-height: 100vh;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   overflow: hidden;
+  padding: 80px 0; // Space for fixed header
 
-  // Background glow effect
   &__glow {
     position: absolute;
     top: 50%;
@@ -30,6 +29,7 @@
     z-index: -2;
     opacity: 0.4;
     animation: pitch-breathe 8s ease-in-out infinite alternate;
+    pointer-events: none;
     
     &Lines {
       stroke: var(--color-pink);
@@ -48,22 +48,31 @@
 
   &__wrapper {
     width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 2rem;
-    gap: 4rem;
+    gap: 2rem;
+    
+    // MOBILE: Stack vertically and center
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 
-    @media (max-width: 992px) {
-      flex-direction: column;
-      text-align: center;
-      padding-top: 8rem;
+    // DESKTOP: Keep your original side-by-side
+    @media (min-width: 992px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+      gap: 4rem;
     }
   }
 
   &__content {
     flex: 1;
     z-index: 10;
+    width: 100%;
   }
 
   &__subheader {
@@ -76,8 +85,11 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 2rem;
+    justify-content: center; // Mobile center
 
-    @media (max-width: 992px) { justify-content: center; }
+    @media (min-width: 992px) { 
+      justify-content: flex-start; // Desktop left
+    }
 
     &::before {
       content: "";
@@ -89,7 +101,8 @@
   }
 
   &__titleMain {
-    font-size: clamp(3.5rem, 8vw, 7rem);
+    // clamp keeps it huge on desktop but readable on mobile
+    font-size: clamp(3rem, 10vw, 7rem); 
     line-height: 0.9;
     margin-bottom: 1rem;
     text-shadow: 0 0 30px rgba(247, 37, 133, 0.3);
@@ -103,22 +116,25 @@
 
   &__titleSmall {
     color: var(--text-gray-500);
-    letter-spacing: 0.5em;
+    letter-spacing: 0.3em; // Reduced slightly for mobile wrap
     text-transform: uppercase;
     font-size: 1.2rem;
     margin-bottom: 2.5rem;
     display: flex;
     align-items: center;
     gap: 1rem;
+    justify-content: center;
 
-    @media (max-width: 992px) { justify-content: center; }
-
-    &::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, var(--color-pink), transparent);
-      max-width: 200px;
+    @media (min-width: 992px) {
+      justify-content: flex-start;
+      letter-spacing: 0.5em;
+      &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--color-pink), transparent);
+        max-width: 200px;
+      }
     }
   }
 
@@ -128,22 +144,39 @@
     font-size: 1.1rem;
     line-height: 1.7;
     margin-bottom: 3rem;
-    @media (max-width: 992px) { margin-left: auto; margin-right: auto; }
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (min-width: 992px) { 
+      margin-left: 0; 
+      margin-right: 0; 
+    }
   }
 
   &__ctas {
     display: flex;
-    gap: 1.5rem;
-    @media (max-width: 992px) { justify-content: center; }
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    @media (min-width: 992px) { 
+      justify-content: flex-start; 
+      gap: 1.5rem;
+    }
   }
 
   &__btn {
-    padding: 1rem 2.5rem;
-    font-size: 1rem;
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); // Sportive slanted shape
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
     transition: all 0.3s ease;
+
+    @media (min-width: 992px) {
+        padding: 1rem 2.5rem;
+        font-size: 1rem;
+    }
 
     &:hover {
       transform: skewX(-5deg) translateY(-3px);
@@ -156,6 +189,13 @@
     display: flex;
     justify-content: center;
     position: relative;
+    width: 60%; // Smaller on mobile
+    max-width: 300px;
+
+    @media (min-width: 992px) {
+      width: 100%;
+      max-width: none;
+    }
 
     &::before {
       content: "";
@@ -168,12 +208,14 @@
   }
 
   &__logo {
+    width: 100%;
+    height: auto;
     filter: drop-shadow(0 0 25px rgba(247, 37, 133, 0.4));
     animation: float 6s ease-in-out infinite;
   }
 }
 
-// Keyframes for the "Life" of the UI
+// Keep your existing Keyframes
 @keyframes glow-pulse {
   0% { transform: translate(-10%, -10%) scale(1); opacity: 0.5; }
   100% { transform: translate(10%, 10%) scale(1.2); opacity: 0.8; }
@@ -190,16 +232,7 @@
 }
 
 @keyframes dot-pulse {
-  0% {
-    opacity: .18;
-    transform: scale(1);
-  }
-  50% {
-      opacity: .9;
-      transform: scale(2.4);
-  }
-  100% {
-    opacity: .18;
-    transform: scale(1);
-  }
+  0% { opacity: .18; transform: scale(1); }
+  50% { opacity: .9; transform: scale(2.4); }
+  100% { opacity: .18; transform: scale(1); }
 }
