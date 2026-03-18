@@ -1,27 +1,36 @@
-// components/SmoothScroll.tsx
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Lenis from "@studio-freight/lenis";
 
-// We create a variable outside the component to hold the instance
+// Mantenemos el export para el Header, pero con cuidado
 export let lenisInstance: Lenis | null = null;
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const requestRef = useRef<number>();
+
   useEffect(() => {
+    // 1. Inicializar Lenis
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true, // Asegúrate de que esto esté activo
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
     });
 
     lenisInstance = lenis;
 
+    // 2. Loop de animación optimizado
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      requestRef.current = requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
 
+    requestRef.current = requestAnimationFrame(raf);
+
+    // 3. Limpieza (MUY IMPORTANTE)
     return () => {
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
       lenis.destroy();
       lenisInstance = null;
     };

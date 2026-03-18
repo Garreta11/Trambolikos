@@ -1,38 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./Header.module.scss";
 import { lenisInstance } from "@/components/layout/SmoothScroll";
 
 const Header = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const lastScrollYRef = useRef(0);
 
   useEffect(() => {
     const controlNavbar = () => {
       const currentScrollY = window.scrollY;
+      
+      // Control de transparencia/fondo
       setIsScrolled(currentScrollY > 50);
 
-      if (currentScrollY > lastScrollY && currentScrollY > 100 && !isMenuOpen) {
+      // Lógica de ocultar/mostrar
+      if (currentScrollY > lastScrollYRef.current && currentScrollY > 100 && !isMenuOpen) {
         setIsVisible(false);
       } else {
         setIsVisible(true);
       }
-      setLastScrollY(currentScrollY);
+      
+      lastScrollYRef.current = currentScrollY;
     };
 
     window.addEventListener("scroll", controlNavbar);
     return () => window.removeEventListener("scroll", controlNavbar);
-  }, [lastScrollY, isMenuOpen]);
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      lenisInstance?.stop();
-    } else {
-      lenisInstance?.start();
-    }
   }, [isMenuOpen]);
 
   // New: Click handler for smooth scrolling
