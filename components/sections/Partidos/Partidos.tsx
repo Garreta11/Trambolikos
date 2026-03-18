@@ -16,7 +16,7 @@ const Partidos = () => {
   }, []);
 
   const playedMatches = partidos.filter((m) => m.isFinished);
-  const upcomingMatches = partidos.filter((m) => !m.isFinished);
+  const upcomingMatches = partidos.filter((m) => !m.isFinished).reverse();
 
   /* No changes to the logic, just ensuring the class application is consistent */
   const MatchCard = ({ match }: { match: MatchType }) => (
@@ -69,6 +69,23 @@ const Partidos = () => {
       <div className={styles.matches__glow} />
       
       <div className={styles.matches__wrapper}>
+      <div className={styles.matches__section}>
+          <header className={styles.matches__header}>
+            <h2 className={`${styles.matches__title}`}>
+            <span className={styles.matches__liveDot}></span> Resultados Recientes
+            </h2>
+          </header>
+          <div className={styles.matches__grid}>
+            {playedMatches.length > 0 ? (
+              playedMatches.map((match) => <MatchCard key={match._id} match={match} />)
+            ) : (
+              <p className={styles.matches__noMatches}>Aún no hay resultados registrados</p>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.matches__divider}></div>
+        
         <div className={styles.matches__section}>
           <header className={styles.matches__header}>
             <h2 className={styles.matches__title}>
@@ -83,23 +100,7 @@ const Partidos = () => {
             )}
           </div>
         </div>
-
-        <div className={styles.matches__divider}></div>
-
-        <div className={styles.matches__section}>
-          <header className={styles.matches__header}>
-            <h2 className={`${styles.matches__title} ${styles['matches__title--muted']}`}>
-              Resultados Recientes
-            </h2>
-          </header>
-          <div className={styles.matches__grid}>
-            {playedMatches.length > 0 ? (
-              playedMatches.map((match) => <MatchCard key={match._id} match={match} />)
-            ) : (
-              <p className={styles.matches__noMatches}>Aún no hay resultados registrados</p>
-            )}
-          </div>
-        </div>
+        
       </div>
     </section>
   );
