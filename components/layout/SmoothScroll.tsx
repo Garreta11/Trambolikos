@@ -6,7 +6,7 @@ import Lenis from "@studio-freight/lenis";
 export let lenisInstance: Lenis | null = null;
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
-  const requestRef = useRef<number>();
+  const requestRef = useRef<number>(null);
 
   useEffect(() => {
     // 1. Inicializar Lenis
