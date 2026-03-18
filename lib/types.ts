@@ -1,5 +1,5 @@
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
-import { SanityFileSource } from "@/lib/sanity.video";
+import type { ButtonVariant } from "@/components/ui/Button";
 
 export type Hero = {
   _id: string;
@@ -14,7 +14,7 @@ export type Hero = {
   ctas: {
     label: string;
     link: string;
-    style: string;
+    style: ButtonVariant;
   }[];
 };
 
@@ -81,6 +81,6 @@ export type Info = {
   ctas: {
     label: string;
     link: string;
-    variant: string;
+    variant: ButtonVariant;
   }[];
 };

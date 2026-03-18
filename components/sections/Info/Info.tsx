@@ -3,6 +3,7 @@ import styles from "./Info.module.scss";
 import { useEffect, useState } from "react";
 import { getInfo } from "@/lib/queries/sanity.sections";
 import { Info as InfoType } from "@/lib/types";
+import Button from "@/components/ui/Button";
 
 const Info = () => {
   const [info, setInfo] = useState<InfoType | null>(null);
@@ -34,13 +35,13 @@ const Info = () => {
             
             <div className={styles.info__ctas}>
               {info.ctas.map((cta) => (
-                <a 
+                <Button
                   key={cta.label}
-                  href={cta.link} 
-                  className={`btn-${cta.variant}`}
+                  href={cta.link}
+                  variant={cta.variant}
                 >
                   {cta.label}
-                </a>
+                </Button>
               ))}
             </div>
           </div>

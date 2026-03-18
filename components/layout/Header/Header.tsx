@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./Header.module.scss";
 import { lenisInstance } from "@/components/layout/SmoothScroll";
+import Button from "@/components/ui/Button";
 
 const Header = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -176,14 +177,19 @@ const Header = () => {
             </a>
           ))}
           {/* CTA duplicated for mobile view visibility if needed */}
-          <button className={`${styles.nav__mobileOnly} btn-primary`}>Comprar entradas</button>
+          <Button className={styles.nav__mobileOnly} variant="primary">
+            Comprar entradas
+          </Button>
         </div>
 
         <div className={styles.nav__actions}>
           <div className={styles.nav__cta}>
-            <button className="btn-primary" style={{ padding: '8px 20px', fontSize: '11px' }}>
+            <Button
+              variant="primary"
+              style={{ padding: "8px 20px", fontSize: "11px" }}
+            >
               Comprar entradas
-            </button>
+            </Button>
           </div>
 
           {/* Burger Button */}

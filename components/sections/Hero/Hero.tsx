@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Hero as HeroType } from "@/lib/types";
 import { urlFor } from "@/lib/sanity.image";
+import Button from "@/components/ui/Button";
 
 const Hero = () => {
   const [hero, setHero] = useState<HeroType | null>(null);
@@ -87,13 +88,14 @@ const Hero = () => {
 
           <div className={styles.hero__ctas}>
             {hero?.ctas?.map((cta) => (
-              <a 
+              <Button
                 key={cta.label} 
-                href={cta.link} 
-                className={`btn-${cta.style} ${styles.hero__btn}`}
+                href={cta.link}
+                variant={cta.style}
+                className={styles.hero__btn}
               >
                 {cta.label}
-              </a>
+              </Button>
             ))}
           </div>
         </div>
