@@ -1,0 +1,262 @@
+// ==========================================================================
+// TrambolikosPenalty.module.scss - ADN TRAMBÓLIKO FC
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Keyframes: Fuego y Glitch
+// --------------------------------------------------------------------------
+
+@keyframes burn {
+  0%, 100% { filter: drop-shadow(0 0 5px var(--color-pink)); opacity: 1; }
+  50% { filter: drop-shadow(0 0 20px var(--color-pink-light)); opacity: 0.8; }
+}
+
+@keyframes trambo-slide {
+  from {
+    opacity: 0;
+    transform: skewX(-15deg) translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: skewX(-10deg) translateX(0);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Variables & Mixins
+// --------------------------------------------------------------------------
+
+.penalty {
+  position: relative;
+  width: 80vw;
+  max-width: 1200px;
+  height: 80dvh;
+  overflow: hidden;
+  background: #050505;
+  // Usamos tus variables globales de fuente
+  font-family: var(--font-display); 
+  user-select: none;
+
+  @media (max-width: 768px) {
+    width: 95vw;
+    height: auto;
+    aspect-ratio: 1/1;
+  }
+
+  &__canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    canvas { display: block; }
+  }
+
+  &__ui {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem;
+
+    @media (max-width: 768px) { padding: 1rem; }
+  }
+
+  // ------------------------------------------------------------------
+  // Scoreboard: Estilo "Marcador de Estadio"
+  // ------------------------------------------------------------------
+
+  &__scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  &__score-card {
+    background: rgba(10, 10, 10, 0.9);
+    border-left: 4px solid var(--color-pink);
+    padding: 1rem 1.5rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
+    min-width: 160px;
+
+    &--best {
+      border-left: 0;
+      border-right: 4px solid var(--color-gold);
+      text-align: right;
+    }
+  }
+
+  &__score-label {
+    font-size: 0.7rem;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-pink);
+    display: block;
+    margin-bottom: 0.5rem;
+
+    @media (max-width: 768px) {
+      font-size: 0.6rem;
+    }
+
+    .penalty__score-card--best & { color: var(--color-gold); }
+  }
+
+  &__score-number {
+    font-size: 3rem;
+    font-family: var(--font-mega); // Anton
+    color: white;
+    line-height: 0.8;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__flame {
+    margin-left: 0.5rem;
+    font-size: 1.5rem;
+    filter: grayscale(1);
+    opacity: 0.3;
+
+    &--active {
+      filter: grayscale(0);
+      opacity: 1;
+      animation: burn 1s infinite;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Anuncios Centrales: ¡GOL O PARADÓN!
+  // ------------------------------------------------------------------
+
+  &__center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+      position: absolute;
+      z-index: 100;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+    }
+  }
+
+  &__result {
+    padding: 1.5rem 4rem;
+    clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+
+    @media (max-width: 768px) {
+      padding: 1rem 2rem;
+    }
+    
+    &--goal {
+      background: var(--color-pink);
+      animation: trambo-slide 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      .penalty__result-text { color: white; text-shadow: 2px 2px 0px black; }
+    }
+
+    &--saved {
+      background: #111;
+      border: 2px solid var(--color-gold);
+      animation: trambo-slide 0.3s ease forwards;
+      .penalty__result-text { color: var(--color-gold); }
+    }
+  }
+
+  &__result-text {
+    font-size: 2rem;
+    font-family: var(--font-mega);
+    text-transform: uppercase;
+    font-style: italic;
+    margin: 0;
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__message {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: white;
+    text-transform: uppercase;
+    background: black;
+    padding: 0.5rem 1rem;
+    letter-spacing: 1px;
+  }
+
+  // ------------------------------------------------------------------
+  // Controles: Botones Trambólikos
+  // ------------------------------------------------------------------
+
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  &__controls {
+    pointer-events: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  &__btn {
+    background: #1a1a1a;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+    padding: 1.2rem;
+    font-family: var(--font-mega);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+
+    @media (max-width: 768px) {
+      padding: 1rem;
+      font-size: 0.8rem;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--color-pink);
+      transform: translateY(-5px) scale(1.05);
+    }
+
+    &:disabled { opacity: 0.2; cursor: not-allowed; }
+  }
+
+  &__reset-btn {
+    pointer-events: auto;
+    background: var(--color-gold);
+    color: black;
+    font-family: var(--font-mega);
+    padding: 1.5rem 3rem;
+    border: none;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
+    
+    &:hover { background: white; transform: scale(1.1); }
+  }
+
+  &__badge {
+    background: rgba(247, 37, 133, 0.1);
+    border: 1px solid var(--color-pink);
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    color: var(--color-pink-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}
