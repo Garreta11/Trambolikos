@@ -1,0 +1,205 @@
+.minijuegos {
+  min-height: 80vh;
+  padding: 4rem 1rem;
+  background-color: var(--color-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  &__title {
+    font-family: var(--font-mega);
+    font-size: clamp(3rem, 10vw, 6rem);
+    color: var(--color-pink);
+    text-transform: uppercase;
+    line-height: 0.8;
+    margin-bottom: 1rem;
+    font-style: italic;
+    letter-spacing: -2px;
+  }
+
+  &__userBadge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: var(--color-dark-card);
+    border: 1px solid var(--color-pink);
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    color: var(--text-gray-400);
+    clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+
+    span {
+      color: var(--color-gold);
+      font-weight: 900;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1100px;
+  }
+}
+
+// --- FORMULARIO DE REGISTRO ---
+.registerBox {
+  background: var(--color-dark-card);
+  padding: 3rem;
+  border: 1px solid var(--color-border);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -5px; left: -5px;
+    width: 30px; height: 30px;
+    border-top: 3px solid var(--color-pink);
+    border-left: 3px solid var(--color-pink);
+  }
+
+  &__title {
+    font-family: var(--font-mega);
+    font-size: 2rem;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+  }
+
+  &__subtitle {
+    color: var(--text-gray-500);
+    margin-bottom: 2rem;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__input {
+    background: #111;
+    border: 1px solid var(--color-border);
+    padding: 1rem;
+    color: white;
+    font-family: var(--font-display);
+    text-align: center;
+    font-size: 1.2rem;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-pink);
+    }
+  }
+
+  &__button {
+    background: var(--color-pink);
+    color: white;
+    padding: 1rem;
+    font-family: var(--font-mega);
+    font-size: 1.2rem;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+
+    &:hover:not(:disabled) {
+      background: white;
+      color: var(--color-pink);
+      transform: scale(1.05);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// --- CARDS DE JUEGOS ---
+.gameCard {
+  background: var(--color-dark-card);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    border-color: var(--color-gold);
+    transform: rotate(-1deg) scale(1.02);
+
+    .gameCard__overlay {
+      opacity: 1;
+    }
+  }
+
+  &__imageWrapper {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+
+  &__image {
+    object-fit: cover;
+    opacity: 0.8;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(247, 37, 133, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: 0.3s;
+    
+    span {
+      background: white;
+      color: black;
+      padding: 0.5rem 1rem;
+      font-family: var(--font-mega);
+      font-size: 0.8rem;
+    }
+  }
+
+  &__content {
+    padding: 1.5rem;
+  }
+
+  &__name {
+    font-family: var(--font-mega);
+    font-size: 1.5rem;
+    color: var(--color-gold);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  &__desc {
+    font-size: 0.85rem;
+    color: var(--text-gray-400);
+    line-height: 1.4;
+  }
+
+  &__footer {
+    margin-top: 1rem;
+    font-size: 0.6rem;
+    color: var(--color-pink);
+    letter-spacing: 1px;
+    font-weight: bold;
+  }
+}
+
+.error {
+  color: #ff4d4d;
+  font-size: 0.8rem;
+  font-family: var(--font-display);
+}

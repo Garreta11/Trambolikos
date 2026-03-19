@@ -1,8 +1,13 @@
 "use client";
 import styles from "./Footer.module.scss";
 import { lenisInstance } from "@/components/layout/SmoothScroll";
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
+  const pathname = usePathname();
+  if (pathname.includes("studio")) {
+    return null;
+  }
   const currentYear = new Date().getFullYear();
 
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -28,7 +33,7 @@ const Footer = () => {
           <div className={styles.footer__brand}>
             <div className={styles.footer__logo}>        
               <svg width="138" height="157" viewBox="0 0 138 157" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g clip-path="url(#clip0_7_109)">
+              <g clipPath="url(#clip0_7_109)">
               <path d="M60.75 70.3901C60.82 70.4101 60.89 70.4301 60.96 70.4501C61.09 69.9501 61.23 69.4501 61.36 68.9501C61.28 68.9301 61.2 68.9101 61.12 68.8901C61 69.3901 60.87 69.9001 60.75 70.4001V70.3901Z" fill="#F72585"/>
               <path d="M98 59.1601C97.8 59.1001 97.52 59.3201 97.28 59.4101C97.45 59.6101 97.59 59.9001 97.8 59.9801C98.39 60.1801 99.02 60.2901 99.63 60.4401C102.39 61.0901 105.15 61.7401 107.91 62.3901C107.93 62.3601 107.95 62.3301 107.97 62.3001C106.48 61.7901 105 61.2601 103.5 60.7901C101.68 60.2201 99.84 59.6801 98 59.1701V59.1601Z" fill="#F72585"/>
               <path d="M98.76 61.8698C101.02 62.4398 103.29 62.9798 105.55 63.5498C107.48 64.0398 109.41 64.5598 111.34 65.0598C111.37 64.9998 111.4 64.9398 111.43 64.8798C106.96 63.5298 102.5 62.1698 97.99 60.7998C97.81 61.6598 98.33 61.7498 98.76 61.8598V61.8698Z" fill="#F72585"/>
