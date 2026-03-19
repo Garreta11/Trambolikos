@@ -6,6 +6,7 @@ import { gsap } from 'gsap';
 import styles from './TrambolikosPenalty.module.scss';
 import { supabase } from '@/lib/supabase';
 import { AppContext } from '@/context/AppContext';
+import { useRouter } from 'next/navigation';
 
 type Direction = 'left' | 'center' | 'right';
 
@@ -24,6 +25,7 @@ interface GameState {
 export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () => void }) {
   // --- Contexto ---
   const { username } = useContext(AppContext);
+  const router = useRouter();
 
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<{
@@ -98,6 +100,11 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
       if (gameData) gameIdRef.current = gameData.id;
     };
 
+    if (!username) {
+      router.push('/minijuegos');
+      return;
+    }
+
     fetchMetadata();
     
     const saved = localStorage.getItem('penaltis-score');
@@ -156,10 +163,17 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
 
   useEffect(() => {
     if (!mountRef.current) return;
+    
+    // 1. Evitar doble inicialización
+    let didInit = false;
+    if (didInit) return;
+    didInit = true;
 
-    const width = mountRef.current.clientWidth;
-    const height = mountRef.current.clientHeight;
+    const container = mountRef.current;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
 
+    // --- Configuración Scene ---
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x050505);
     scene.fog = new THREE.Fog(0x050505, 10, 50);
@@ -171,8 +185,12 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    mountRef.current.appendChild(renderer.domElement);
+    
+    // Limpiamos el contenedor antes de añadir el nuevo canvas por si acaso
+    container.innerHTML = ''; 
+    container.appendChild(renderer.domElement);
 
+    // --- Luces y Objetos (Igual que antes) ---
     scene.add(new THREE.AmbientLight(0xffffff, 1.2));
     const spot = new THREE.SpotLight(COLORS.purple, 25);
     spot.position.set(0, 10, 5);
@@ -187,34 +205,30 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
 
     const goal = new THREE.Group();
     const pm = new THREE.MeshPhongMaterial({ color: 0xffffff });
-    const pL = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3, 0.2), pm);
-    pL.position.set(-3.5, 1.5, -5);
-    const pR = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3, 0.2), pm);
-    pR.position.set(3.5, 1.5, -5);
-    const cb = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.2, 0.2), pm);
-    cb.position.set(0, 3, -5);
+    const pL = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3, 0.2), pm); pL.position.set(-3.5, 1.5, -5);
+    const pR = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3, 0.2), pm); pR.position.set(3.5, 1.5, -5);
+    const cb = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.2, 0.2), pm); cb.position.set(0, 3, -5);
     goal.add(pL, pR, cb);
     scene.add(goal);
 
-    const loader = new THREE.TextureLoader();
-    const tBall = loader.load('/minijuegos/penaltis/ball.jpg');
-    const tMaiki = loader.load('/minijuegos/penaltis/maiki.png');
-    tMaiki.colorSpace = THREE.SRGBColorSpace;
-    tBall.colorSpace = THREE.SRGBColorSpace;
+    // --- Texturas con Manager ---
+    const manager = new THREE.LoadingManager();
+    const loader = new THREE.TextureLoader(manager);
+    const textures: Record<string, THREE.Texture> = {};
 
-    // Creación de objetos inmediata para evitar delays
-    const ball = new THREE.Mesh(
-      new THREE.SphereGeometry(0.25, 32, 32),
-      new THREE.MeshStandardMaterial({ map: tBall })
-    );
+    ['ball.jpg', 'maiki.png'].forEach((file) => {
+      loader.load(`/minijuegos/penaltis/${file}`, (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        textures[file] = texture;
+      });
+    });
+
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.25, 32, 32), new THREE.MeshStandardMaterial());
     ball.position.set(INITIAL_BALL_POS.x, INITIAL_BALL_POS.y, INITIAL_BALL_POS.z);
     scene.add(ball);
 
     const keeper = new THREE.Group();
-    const body = new THREE.Mesh(
-      new THREE.PlaneGeometry(1.5, 3),
-      new THREE.MeshStandardMaterial({ map: tMaiki, transparent: true})
-    );
+    const body = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 3), new THREE.MeshStandardMaterial({transparent: true}));
     body.position.y = 0.75;
     keeper.add(body);
     keeper.position.set(INITIAL_KEEPER_POS.x, INITIAL_KEEPER_POS.y, INITIAL_KEEPER_POS.z);
@@ -227,38 +241,49 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
       if (sceneRef.current) {
         const { camera, keeper, renderer, scene } = sceneRef.current;
         sceneRef.current.animationId = id;
-
-        // Solo aplicamos parallax si no hemos perdido (fase saved)
-        // Usamos una referencia local para el estado de la animación
         const isZooming = camera.position.z < 4; 
-        
         if (!isZooming) {
           camera.position.x += (mouseXRef.current - camera.position.x) * 0.05;
         }
-
-        // SIEMPRE APUNTAR AL PORTERO
         camera.lookAt(keeper.position.x, keeper.position.y + 1, keeper.position.z);
-        
         renderer.render(scene, camera);
       }
     };
 
-    animate();
-    setIsLoaded(true);
+    manager.onLoad = () => {
+      setIsLoaded(true);
+      ball.material.map = textures['ball.jpg'];
+      body.material.map = textures['maiki.png'];
+      ball.material.needsUpdate = true;
+      body.material.needsUpdate = true;
+      animate();
+    };
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (!mountRef.current) return;
-      const rect = mountRef.current.getBoundingClientRect();
+      const rect = container.getBoundingClientRect();
       mouseXRef.current = (((e.clientX - rect.left) / rect.width) * 2 - 1) * 2.5;
     };
 
     window.addEventListener('mousemove', handleMouseMove);
+
+    // 2. LIMPIEZA CRÍTICA
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      if (sceneRef.current?.animationId) cancelAnimationFrame(sceneRef.current.animationId);
+      if (sceneRef.current?.animationId) {
+        cancelAnimationFrame(sceneRef.current.animationId);
+      }
+      // Parar GSAP
+      gsap.killTweensOf([ball.position, keeper.position, camera.position]);
+      
+      // Liberar memoria GPU
       renderer.dispose();
+      scene.clear();
+      if (container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
+      sceneRef.current = null;
     };
-  }, []);
+  }, []); // El array vacío es correcto aquí
 
   const shoot = useCallback((target: Direction) => {
     if (!sceneRef.current || gameState.isKicking) return;
