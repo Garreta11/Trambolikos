@@ -3,4 +3,19 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
+  padding: 20px; // Evita que pegue a los bordes en móvil
+  width: 100%;
+
+  // --- ADAPTACIÓN MÓVIL ---
+  @media (max-width: 768px) {
+    flex-direction: column; // Apila los elementos (Vertical)
+    gap: 30px;              // Un poco más de aire entre bloques
+    text-align: center;     // Centramos los textos para estética móvil
+    
+    // Si tienes elementos hijos, asegúrate de que ocupen el ancho
+    & > * {
+      width: 100%;
+      max-width: 400px; // Para que no se estiren infinito en tablets
+    }
+  }
 }

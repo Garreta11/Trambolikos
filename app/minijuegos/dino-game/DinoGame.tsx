@@ -289,6 +289,16 @@ const DinoGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
     };
   }, [gameState]);
 
+  const handleJump = useCallback(() => {
+    if (gameState === 'PLAYING') {
+      if (dinoRef.current.y === 0) {
+        dinoRef.current.dy = -12;
+      }
+    } else {
+      startGame();
+    }
+  }, [gameState]);
+
   if (!username) {
     router.push('/minijuegos');
     return;
@@ -305,7 +315,7 @@ const DinoGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
           <div>{score.toString().padStart(5, '0')}</div>
         </div>
 
-        <div ref={containerRef} className={styles.dinoGame__canvas}>
+        <div ref={containerRef} className={styles.dinoGame__canvas} onClick={handleJump}>
 
           {cloudsRef.current.map(cloud => (
             <div
@@ -369,9 +379,21 @@ const DinoGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
           )}
         </div>
 
+        {/* BOTÓN DE SALTO PARA MÓVIL */}
+        <div className={styles.dinoGame__mobileActions}>
+          <button 
+            className={styles.dinoGame__jumpButton}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              handleJump();
+            }}
+          >
+            SALTA
+          </button>
+        </div>
+
         <div className={styles.dinoGame__instructions}>
-          <p>Usa <b>Espacio</b> o <b>↑</b> para saltar</p>
-          <p>Usa <b>↓</b> para agacharte</p>
+          <p>Usa <b>Espacio</b> para saltar</p>
         </div>
 
       </div>
