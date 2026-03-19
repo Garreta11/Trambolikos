@@ -11,6 +11,11 @@
   min-height: 100dvh ;
   width: 50%; // Ajustado para que el wrapper controle el ancho
   
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 0.5rem;
+  }
+  
   &__container {
     max-width: 800px;
     width: 100%;
@@ -19,6 +24,10 @@
     padding: 1.5rem;
     position: relative;
     box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+
+    @media (max-width: 768px) {
+      padding: 0.5rem;
+    }
 
     // Efecto de corner decorativo
     &::before {
@@ -131,6 +140,10 @@
     text-transform: uppercase;
     margin-bottom: 1.5rem;
     line-height: 0.9;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
   }
 
   &__overlayText {
@@ -156,6 +169,36 @@
       transform: scale(1.1) skewX(-5deg);
       background: var(--color-pink-light);
     }
+  }
+
+  &__mobileActions {
+    display: none; // Oculto por defecto (Desktop)
+    width: 100%;
+    margin-top: 1.5rem;
+    justify-content: center;
+
+    @media (max-width: 768px) {
+      display: flex; // Aparece en móvil
+    }
+  }
+
+  &__jumpButton {
+    width: 100%;
+    max-width: 200px;
+    height: 60px;
+    background: var(--color-gold); // Color distinto para que destaque
+    color: black;
+    font-family: var(--font-mega);
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 5px 0px #b08d00; // Efecto botón 3D
+    active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0px #b08d00;
+    }
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   &__instructions {
