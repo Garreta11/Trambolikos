@@ -374,6 +374,40 @@ export default class Race {
     this.posDisplay.innerText = pos;
   }
 
+  handleJoystick(degree, force, isEnd = false) {
+    if (isEnd) {
+        this.keys['w'] = false;
+        this.keys['s'] = false;
+        this.keys['a'] = false;
+        this.keys['d'] = false;
+        return;
+    }
+
+    // Normalized force (nipplejs force can go above 1)
+    const normalizedForce = Math.min(force, 1);
+
+    // 1. Acceleration / Reversing
+    // Forward is roughly between 20 and 160 degrees
+    this.keys['w'] = (degree > 20 && degree < 160);
+    // Backward is roughly between 200 and 340 degrees
+    this.keys['s'] = (degree > 200 && degree < 340);
+
+    // 2. Turning (Smooth Steering)
+    // If the joystick is pushed left (90-270) or right
+    if (degree > 110 && degree < 250) {
+        // Left
+        this.player.rotation += this.player.turnSpeed * (normalizedForce * 0.8);
+    } else if (degree < 70 || degree > 290) {
+        // Right
+        this.player.rotation -= this.player.turnSpeed * (normalizedForce * 0.8);
+    }
+
+    // 3. Optional: Speed boost based on how far the stick is pushed
+    if (this.keys['w']) {
+        this.player.velocity += this.player.acceleration * normalizedForce;
+    }
+  }
+
   animate() {
     requestAnimationFrame(this.animate.bind(this));
     this.updatePhysics();

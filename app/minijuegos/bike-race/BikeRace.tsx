@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useContext } from "react";
 import styles from './BikeRace.module.scss';
+import nipplejs from 'nipplejs';
 import Race from "./Race";
 import { supabase } from '@/lib/supabase';
 import { AppContext } from '@/context/AppContext';
@@ -21,6 +22,8 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
   const finalMessageRef = useRef<HTMLDivElement | null>(null);
   const scoreboardRefs = useRef<HTMLDivElement[]>([]);
   const uiRaceRef = useRef<HTMLDivElement | null>(null);
+
+  const joystickRef = useRef<HTMLDivElement | null>(null);
 
   // 0. Refs para IDs de BD
   const userIdRef = useRef<string | null>(null);
@@ -79,11 +82,10 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
     }
   };
 
-  // 3. Crear instancia de Race
   useEffect(() => {
     if (!containerRef.current || raceRef.current) return;
 
-    // Crear instancia
+    // 1. Create Race Instance
     raceRef.current = new Race({
       container: containerRef.current,
       startScreen: startScreenRef.current,
@@ -97,13 +99,36 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
       onFinish: (finalTime: number) => saveScore(finalTime)
     });
 
-    // Cleanup (MUY IMPORTANTE en React)
+    // 2. Initialize Joystick AFTER Race instance is created
+    let joystickManager: any = null;
+    if (joystickRef.current) {
+      joystickManager = nipplejs.create({
+        zone: joystickRef.current,
+        mode: 'static',
+        position: { left: '80px', bottom: '80px' },
+        color: 'white',
+        size: 100
+      });
+
+      joystickManager.on('move', (evt: any, data: any) => {
+        if (raceRef.current) {
+          // We pass the raw data for more granular control
+          raceRef.current.handleJoystick(data.angle.degree, data.force);
+        }
+      });
+
+      joystickManager.on('end', () => {
+        if (raceRef.current) {
+          raceRef.current.handleJoystick(0, 0, true);
+        }
+      });
+    }
+
     return () => {
+      if (joystickManager) joystickManager.destroy();
       if (raceRef.current?.renderer) {
         raceRef.current.renderer.dispose();
-        containerRef.current?.removeChild(
-          raceRef.current.renderer.domElement
-        );
+        containerRef.current?.removeChild(raceRef.current.renderer.domElement);
       }
     };
   }, []);
@@ -162,6 +187,12 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
           ¡GOOOOL! ¡CAMPEÓN!
         </div>
       </div>
+
+      {/* Joystick Container */}
+      <div 
+        ref={joystickRef} 
+        className={styles.race__joystick}
+      />
 
       {/* Canvas Race */}
       <div className={styles.race__canvas} ref={containerRef} />
