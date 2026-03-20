@@ -1,0 +1,166 @@
+.race {
+  position: relative;
+  width: 90vw;
+  max-width: 1200px;
+  height: 80dvh;
+  margin: 0 auto;
+  border: 4px solid var(--color-pink);
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: var(--color-dark);
+
+  // Pantalla de Inicio - Estilo Épico
+  &__start {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.9), var(--color-pink-tint)), 
+                url('/minijuegos/bike-race/portada.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    text-align: center;
+    padding: 20px;
+
+    h1 {
+      font-size: clamp(2rem, 8vw, 4.5rem);
+      color: var(--color-gold);
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: -2px;
+      margin-bottom: 10px;
+      text-shadow: 4px 4px 0 var(--color-pink-dark), 8px 8px 0px #000;
+      transform: skewX(-10deg);
+    }
+
+    p {
+      color: var(--color-gold);
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      background: rgba(0,0,0,0.7);
+      padding: 5px 15px;
+      border-left: 4px solid var(--color-gold);
+    }
+
+    button {
+      background: var(--color-gold);
+      color: black;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: white;
+        transform: scale(1.1) rotate(-2deg);
+        box-shadow: 0 0 20px var(--color-gold);
+      }
+    }
+  }
+
+  // Interfaz de Usuario durante la carrera
+  &__ui {
+    position: absolute;
+    inset: 0;
+    pointer-events: auto;
+    color: white;
+    padding: 25px;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 100;
+
+    &__scoreboard {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+
+      &__panel {
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid var(--color-pink-dark);
+        padding: 10px 20px;
+        min-width: 120px;
+        border-radius: 5px;
+        box-shadow: inset 0 0 10px rgba(var(--color-pink-dark), 0.5);
+
+        &__label {
+          font-size: 0.7rem;
+          color: var(--color-gold);
+          text-transform: uppercase;
+          margin-bottom: 5px;
+          display: block;
+        }
+      }
+
+      &__value {
+        font-size: 1.8rem;
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+
+        span:last-child {
+          font-size: 0.8rem;
+          color: rgba(255,255,255,0.5);
+        }
+      }
+    }
+
+    // El mensaje de GOL (aparece al final)
+    &__finalMessage {
+      display: none; // Controlado por JS
+      font-size: 5rem;
+      font-weight: 900;
+      color: var(--color-gold);
+      text-align: center;
+      text-shadow: 0 0 20px var(--color-gold), 5px 5px 0 var(--color-pink-dark);
+      animation: tramboliko-pulse 0.5s infinite alternate;
+      z-index: 20;
+
+      button {
+        background: var(--color-gold);
+        color: black;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: white;
+          transform: scale(1.1) rotate(-2deg);
+          box-shadow: 0 0 20px var(--color-gold);
+        }
+      }
+    }
+  }
+
+  &__canvas {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Animación de pulso para momentos épicos
+@keyframes tramboliko-pulse {
+  from { transform: scale(1) rotate(-2deg); }
+  to { transform: scale(1.1) rotate(2deg); }
+}
+
+// Mobile Adjustments
+@media (max-width: 768px) {
+  .race__ui__scoreboard__value { font-size: 1.2rem; }
+  .race__ui__finalMessage { font-size: 2.5rem; }
+}
