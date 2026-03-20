@@ -1,10 +1,10 @@
-'use client';
+"use client"
 import styles from './page.module.scss';
 import { useState } from 'react';
-import TrambolikosPenalty from './TrambolikosPenalty';
+import BikeRace from './BikeRace';
 import Leaderboard from '@/components/ui/Leaderboard/Leaderboard';
 
-const DinoPage = () => {
+const BikeRacePage = () => {
   const [leaderboardKey, setLeaderboardKey] = useState(0);
 
   const handleNewRecord = () => {
@@ -13,10 +13,10 @@ const DinoPage = () => {
 
   return (
     <div className={styles.page}>
-      <TrambolikosPenalty onScoreSaved={handleNewRecord} />
-      <Leaderboard key={leaderboardKey} gameName="penaltis" />
+      <BikeRace onScoreSaved={handleNewRecord} />
+      <Leaderboard key={leaderboardKey} gameName="bike-race" />
     </div>
-  );
+  )
 };
 
-export default DinoPage;
+export default BikeRacePage;
