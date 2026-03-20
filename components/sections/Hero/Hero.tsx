@@ -105,8 +105,8 @@ const Hero = () => {
             <Image 
               src={urlFor(hero.logo).url()} 
               alt="Club Logo" 
-              width={500} 
-              height={500} 
+              width={340} 
+              height={340} 
               priority // Crucial for Hero images
               className={styles.hero__logo}
             />

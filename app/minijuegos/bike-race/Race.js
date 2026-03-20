@@ -32,6 +32,18 @@ export default class Race {
       this.textures.demi = texture;
       this.textures.demi.colorSpace = THREE.SRGBColorSpace;
     });
+    this.loadertextures.load('/minijuegos/bike-race/wildpork1.png', (texture) => {
+      this.textures.wildpork = texture;
+      this.textures.wildpork.colorSpace = THREE.SRGBColorSpace;
+    });
+    this.loadertextures.load('/minijuegos/bike-race/girls.png', (texture) => {
+      this.textures.girls = texture;
+      this.textures.girls.colorSpace = THREE.SRGBColorSpace;
+    });
+    this.loadertextures.load('/minijuegos/bike-race/beachball.png', (texture) => {
+      this.textures.beachball = texture;
+      this.textures.beachball.colorSpace = THREE.SRGBColorSpace;
+    });
 
 
     // Options
@@ -73,6 +85,7 @@ export default class Race {
 
     this.roadWidth = 12;
     this.keys = {};
+    this.obstacles = [];
 
     this.player = {
       velocity: 0,
@@ -124,6 +137,7 @@ export default class Race {
     this.createCityWorld();
     this.createFootballStadium();
     this.createBikes();
+    this.createObstacles();
   }
 
   createCityWorld() {
@@ -255,7 +269,8 @@ export default class Race {
     const shieldGeo = new THREE.PlaneGeometry(2, 2); // Ajusta el tamaño
     const shieldMat = new THREE.MeshStandardMaterial({
       map: this.textures.demi,
-      side: THREE.DoubleSide 
+      side: THREE.DoubleSide ,
+      transparent: true,
     });
     const shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
 
@@ -264,6 +279,54 @@ export default class Race {
     
     // Añadirlo como hijo de la aiBike
     this.aiBike.add(shieldMesh);
+  }
+
+  createObstacles() {
+    const obstacleGeo = new THREE.PlaneGeometry(4, 4);
+    const obstacleMat1 = new THREE.MeshPhongMaterial({ 
+        map: this.textures.wildpork, 
+        side: THREE.DoubleSide,
+        transparent: true,
+    });
+    const obstacleMat2 = new THREE.MeshPhongMaterial({ 
+        map: this.textures.girls, 
+        side: THREE.DoubleSide,
+        transparent: true,
+    });
+    const obstacleMat3 = new THREE.MeshPhongMaterial({ 
+        map: this.textures.beachball, 
+        side: THREE.DoubleSide,
+        transparent: true,
+    });
+
+    // Creamos 15 obstáculos a lo largo del recorrido
+    for (let i = 0; i < 15; i++) {
+        // Obtenemos un punto aleatorio de la curva (entre el 10% y el 90% del trayecto)
+        const t = 0.1 + Math.random() * 0.8;
+        const pos = this.curve.getPoint(t);
+        const lookAt = this.curve.getPoint(t + 0.01);
+        const randomMat = Math.random() < 0.33 ? obstacleMat1 : Math.random() < 0.66 ? obstacleMat2 : obstacleMat3;
+
+        const obstacle = new THREE.Mesh(obstacleGeo, randomMat);
+        
+        // Posición base en la curva
+        obstacle.position.copy(pos);
+        obstacle.position.y = 2; // Elevado para que se vea como una valla
+
+        // Orientación: que mire hacia la carretera
+        obstacle.lookAt(lookAt);
+
+        // Desplazamiento lateral aleatorio para que no estén todos en el centro
+        const sideOffset = (Math.random() - 0.5) * (this.roadWidth * 1.5);
+        
+        // Calcular vector perpendicular para el desplazamiento lateral
+        const angle = Math.atan2(lookAt.x - pos.x, lookAt.z - pos.z);
+        obstacle.position.x += Math.cos(angle) * sideOffset;
+        obstacle.position.z -= Math.sin(angle) * sideOffset;
+
+        this.scene.add(obstacle);
+        this.obstacles.push(obstacle);
+    }
   }
 
   startRace() {
@@ -300,6 +363,16 @@ export default class Race {
       const oldPos = this.playerBike.position.clone();
       this.playerBike.rotation.y = this.player.rotation;
       this.playerBike.translateZ(this.player.velocity);
+
+      // Colisiones con obstáculos
+      for (const obstacle of this.obstacles) {
+        const dist = this.playerBike.position.distanceTo(obstacle.position);
+        if (dist < 3) { // Radio de colisión
+            this.playerBike.position.copy(oldPos); // Volver atrás
+            this.player.velocity = -0.1; // Rebote suave o frenazo
+            // Opcional: podrías añadir un efecto visual aquí
+        }
+    }
 
       const collision = this.getClosestPathPoint(this.playerBike.position);
       if(collision.distance > this.roadWidth - 1 && this.playerBike.position.z < 1000) {
@@ -343,7 +416,8 @@ export default class Race {
         this.scoreboardRefs.forEach(ref => {
           ref.style.display = 'none';
         });
-        this.finalMessage.style.display = 'block';
+        this.finalMessage.style.display = 'flex';
+        this.uiRace.style.pointerEvents = 'auto';
         this.finalMessage.innerHTML = `
         ¡LLEGASTE TARDE!
         <br>
@@ -384,7 +458,7 @@ export default class Race {
     }
 
     // Normalized force (nipplejs force can go above 1)
-    const normalizedForce = Math.min(force, 1);
+    const normalizedForce = Math.min(force, 0.5);
 
     // 1. Acceleration / Reversing
     // Forward is roughly between 20 and 160 degrees

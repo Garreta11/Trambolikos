@@ -5,10 +5,11 @@ import styles from "./Header.module.scss";
 import { lenisInstance } from "@/components/layout/SmoothScroll";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const Header = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,6 +38,12 @@ const Header = () => {
     return () => window.removeEventListener("scroll", controlNavbar);
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsMenuOpen(false);
+    }, 100);
+  }, [pathname]);
+
   // New: Click handler for smooth scrolling
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     const targetId = id.toLowerCase();
@@ -58,6 +65,10 @@ const Header = () => {
     }
   };
 
+  const handleHomepage = () => {
+    router.push('/');
+  };
+
   if (pathname.includes("studio")) {
     return null;
   }
@@ -71,7 +82,7 @@ const Header = () => {
       `}
     >
       <div className={styles.nav__container}>
-        <div className={styles.nav__logo}>
+        <div className={styles.nav__logo} onClick={() => handleHomepage()}>
           <div className={styles.nav__logoText}>
             <svg width="30" height="34" viewBox="0 0 138 157" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_7_109)">
@@ -178,7 +189,7 @@ const Header = () => {
               </clipPath>
               </defs>
             </svg>
-            TRAMBOLIKOS <span className={styles.nav__logoTextPink}>FC</span>
+            TRAMBOLIKOS
           </div>
         </div>
 

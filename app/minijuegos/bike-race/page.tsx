@@ -14,7 +14,7 @@ const BikeRacePage = () => {
   return (
     <div className={styles.page}>
       <BikeRace onScoreSaved={handleNewRecord} />
-      <Leaderboard key={leaderboardKey} gameName="bike-race" />
+      <Leaderboard key={leaderboardKey} gameName="bike-race" reverse={true} />
     </div>
   )
 };

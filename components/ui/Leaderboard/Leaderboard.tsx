@@ -7,9 +7,10 @@ import styles from './Leaderboard.module.scss';
 interface Leader {
   username: string;
   score: number;
+  
 }
 
-const Leaderboard: React.FC<{ gameName: string }> = ({ gameName }) => {
+const Leaderboard: React.FC<{ gameName: string, reverse?: boolean }> = ({ gameName, reverse = false }) => {
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +23,7 @@ const Leaderboard: React.FC<{ gameName: string }> = ({ gameName }) => {
         .from('puntuaciones')
         .select(`score, usuarios ( username )`)
         .eq('juego_id', gameData.id)
-        .order('score', { ascending: false })
+        .order('score', { ascending: reverse })
         .limit(8); // Mostramos un poco más para que luzca el diseño
 
       if (data) {
@@ -62,7 +63,7 @@ const Leaderboard: React.FC<{ gameName: string }> = ({ gameName }) => {
   return (
     <aside className={styles.leaderboard}>
       <div className={styles.leaderboard__header}>
-        <h3 className={styles.leaderboard__title}>HALL OF FAME</h3>
+        <h3 className={styles.leaderboard__title}>CLASIFICACIÓN</h3>
         <div className={styles.leaderboard__badge}>LIVE</div>
       </div>
       
