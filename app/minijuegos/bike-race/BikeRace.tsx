@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useContext } from "react";
 import styles from './BikeRace.module.scss';
-import nipplejs from 'nipplejs';
+// Eliminamos la importación estática de nipplejs que causaba el error
 import Race from "./Race";
 import { supabase } from '@/lib/supabase';
 import { AppContext } from '@/context/AppContext';
@@ -22,28 +22,19 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
   const finalMessageRef = useRef<HTMLDivElement | null>(null);
   const scoreboardRefs = useRef<HTMLDivElement[]>([]);
   const uiRaceRef = useRef<HTMLDivElement | null>(null);
-
   const joystickRef = useRef<HTMLDivElement | null>(null);
 
-  // 0. Refs para IDs de BD
   const userIdRef = useRef<string | null>(null);
   const gameIdRef = useRef<string | null>(null);
 
-  // 0. Redirigir si no hay username
   useEffect(() => {
     if (!username) {
       router.push('/minijuegos');
-      return;
     }
-  }, [username]);
+  }, [username, router]);
 
-  // 1. Cargar metadatos
   useEffect(() => {
-    if (!username) {
-      router.push('/minijuegos');
-      return;
-    }
-
+    if (!username) return;
     const fetchMetadata = async () => {
       const { data: userData } = await supabase.from('usuarios').select('id').eq('username', username.toLowerCase()).single();
       if (userData) userIdRef.current = userData.id;
@@ -51,15 +42,11 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
       const { data: gameData } = await supabase.from('juegos').select('id').eq('slug', 'bike-race').single();
       if (gameData) gameIdRef.current = gameData.id;
     };
-
     fetchMetadata();
   }, [username]);
 
-  // 2. Función de guardado (el score será el tiempo en milisegundos)
   const saveScore = async (timeMs: number) => {
     if (!userIdRef.current || !gameIdRef.current) return;
-
-    // En carreras, queremos el tiempo MÁS BAJO
     const { data: existing } = await supabase
       .from('puntuaciones')
       .select('score')
@@ -67,7 +54,6 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
       .eq('juego_id', gameIdRef.current)
       .maybeSingle();
 
-    // Si no hay récord o el tiempo actual es menor (más rápido)
     if (!existing || timeMs < existing.score) {
       const { error } = await supabase
         .from('puntuaciones')
@@ -77,15 +63,15 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
           score: timeMs,
           alcanzado_at: new Date().toISOString()
         }, { onConflict: 'usuario_id, juego_id' });
-      if (error) console.error('Error al guardar la puntuación:', error);
-      if (onScoreSaved) setTimeout(onScoreSaved, 300);
+      if (!error && onScoreSaved) setTimeout(onScoreSaved, 300);
     }
   };
 
   useEffect(() => {
-    if (!containerRef.current || raceRef.current) return;
+    // PROTECCIÓN: No ejecutar nada si no estamos en el cliente
+    if (typeof window === 'undefined' || !containerRef.current) return;
 
-    // 1. Create Race Instance
+    // 1. Instanciar el Juego
     raceRef.current = new Race({
       container: containerRef.current,
       startScreen: startScreenRef.current,
@@ -99,45 +85,48 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
       onFinish: (finalTime: number) => saveScore(finalTime)
     });
 
-    // 2. Initialize Joystick AFTER Race instance is created
+    // 2. Cargar NippleJS dinámicamente para evitar error de SSR
     let joystickManager: any = null;
-    if (joystickRef.current) {
-      joystickManager = nipplejs.create({
-        zone: joystickRef.current,
-        mode: 'static',
-        position: { left: '80px', bottom: '80px' },
-        color: 'white',
-        size: 100
-      });
 
-      joystickManager.on('move', (evt: any, data: any) => {
-        if (raceRef.current) {
-          // We pass the raw data for more granular control
-          raceRef.current.handleJoystick(data.angle.degree, data.force);
-        }
-      });
+    const initJoystick = async () => {
+      const nipplejs = (await import('nipplejs')).default;
+      if (joystickRef.current) {
+        joystickManager = nipplejs.create({
+          zone: joystickRef.current,
+          mode: 'static',
+          position: { left: '80px', bottom: '80px' },
+          color: 'white',
+          size: 100
+        });
 
-      joystickManager.on('end', () => {
-        if (raceRef.current) {
-          raceRef.current.handleJoystick(0, 0, true);
-        }
-      });
-    }
+        joystickManager.on('move', (evt: any, data: any) => {
+          if (raceRef.current) {
+            raceRef.current.handleJoystick(data.angle.degree, data.force);
+          }
+        });
+
+        joystickManager.on('end', () => {
+          if (raceRef.current) {
+            raceRef.current.handleJoystick(0, 0, true);
+          }
+        });
+      }
+    };
+
+    initJoystick();
 
     return () => {
       if (joystickManager) joystickManager.destroy();
       if (raceRef.current?.renderer) {
         raceRef.current.renderer.dispose();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         containerRef.current?.removeChild(raceRef.current.renderer.domElement);
       }
     };
   }, []);
 
   const handleStart = () => {
-    if (raceRef.current) {
-      console.log('startRace');
-      raceRef.current.startRace();
-    }
+    if (raceRef.current) raceRef.current.startRace();
   };
 
   const addToScoreboardRefs = (el: HTMLDivElement | null) => {
@@ -148,14 +137,12 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
 
   return (
     <div className={styles.race}>
-      {/* Start race */}
       <div className={styles.race__start} ref={startScreenRef}>
         <h1>BARCELONA RACE</h1>
         <p>¡Carrera épica! No llegues más tarde que Demi.</p>
-        <button onClick={() => handleStart()}>¡AL ESTADIO!</button>
+        <button onClick={handleStart}>¡AL ESTADIO!</button>
       </div>
 
-      {/* UI Race */}
       <div className={styles.race__ui} ref={uiRaceRef}>
         <div className={styles.race__ui__scoreboard} ref={addToScoreboardRefs}>
           <div className={styles.race__ui__scoreboard__panel}>
@@ -176,7 +163,6 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
               <span>KM/H</span>
             </div>
           </div>
-          
           <div className={styles.race__ui__scoreboard__panel}>
             <div className={styles.race__ui__scoreboard__panel__label}>Posición</div>
             <div ref={posDisplayRef} className={styles.race__ui__scoreboard__value}>1º</div>
@@ -188,13 +174,7 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
         </div>
       </div>
 
-      {/* Joystick Container */}
-      <div 
-        ref={joystickRef} 
-        className={styles.race__joystick}
-      />
-
-      {/* Canvas Race */}
+      <div ref={joystickRef} className={styles.race__joystick} />
       <div className={styles.race__canvas} ref={containerRef} />
     </div>
   );
