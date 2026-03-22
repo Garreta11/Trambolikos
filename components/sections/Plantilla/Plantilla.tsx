@@ -29,77 +29,81 @@ const Plantilla = () => {
 
   const positionsOrder = ["GK", "DF", "MF", "FW"];
   const positionNames: Record<string, string> = {
-    GK: "Guardianes",
-    DF: "Defensa",
-    MF: "Medio",
-    FW: "Ataque",
+    GK: "Portero",
+    DF: "Defensas",
+    MF: "Centrocampistas",
+    FW: "Delanteros",
   };
 
   return (
     <section className={styles.roster} id="plantilla">
-      <header className={styles.roster__header}>
-        <div className={styles.roster__titleGroup}>
-          <span className={styles.roster__subtitle}>Temporada 2026</span>
-          <h1 className={styles.roster__title}>Primer Equipo</h1>
-        </div>
-        <div className={styles.roster__line}></div>
-      </header>
-
-      {positionsOrder.map((pos) => {
-        const playersInPos = players.filter((p) => p.position === pos);
-        if (playersInPos.length === 0) return null;
-
-        return (
-          <div key={pos} className={styles.roster__section}>
-            <h2 className={styles.roster__sectionTitle}>{positionNames[pos]}</h2>
-            <div className={styles.roster__grid}>
-              {playersInPos.map((player) => (
-                <article 
-                  key={player._id} 
-                  className={styles.playerCard}
-                  onMouseEnter={handleMouseEnter} // Reinicia video aquí
-                >
-                  <div className={styles.playerCard__media}>
-                    <Image
-                      src={urlFor(player.image).url()}
-                      alt={player.name}
-                      fill
-                      className={styles.playerCard__image}
-                    />
-                    
-                    {player.actionVideoUrl && (
-                      <video
-                        src={player.actionVideoUrl}
-                        className={styles.playerCard__video}
-                        loop
-                        muted
-                        playsInline
-                      />
-                    )}
-
-                    <div className={styles.playerCard__stats}>
-                      {player.stats?.map((stat, i) => (
-                        <div key={i} className={styles.playerCard__statItem}>
-                          <span className={styles.playerCard__statLabel}>{stat.statName}</span>
-                          <span className={styles.playerCard__statValue}>{stat.value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className={styles.playerCard__info}>
-                    <span className={styles.playerCard__number}>{player.number}</span>
-                    <div className={styles.playerCard__nameWrapper}>
-                      <h3 className={styles.playerCard__name}>{player.name}</h3>
-                      <span className={styles.playerCard__pos}>{player.position}</span>
-                    </div>
-                  </div>
-                </article>
-              ))}
+      <div className={styles.roster__container}>
+        <header className={styles.roster__header}>
+          <div className={styles.roster__title}>
+            <div className={styles.roster__title__subtitle}>
+              <div className={styles.roster__title__subtitle__icon} />
+              El equipo
             </div>
+            <h2 className={styles.roster__title__text}>Nuestra Plantilla</h2>
           </div>
-        );
-      })}
+        </header>
+
+        {positionsOrder.map((pos) => {
+          const playersInPos = players.filter((p) => p.position === pos);
+          if (playersInPos.length === 0) return null;
+
+          return (
+            <div key={pos} className={styles.roster__section}>
+              <h2 className={styles.roster__sectionTitle}>{positionNames[pos]}</h2>
+              <div className={styles.roster__grid}>
+                {playersInPos.map((player) => (
+                  <article 
+                    key={player._id} 
+                    className={styles.playerCard}
+                    onMouseEnter={handleMouseEnter} // Reinicia video aquí
+                  >
+                    <div className={styles.playerCard__media}>
+                      <Image
+                        src={urlFor(player.image).url()}
+                        alt={player.name}
+                        fill
+                        className={styles.playerCard__image}
+                      />
+                      
+                      {player.actionVideoUrl && (
+                        <video
+                          src={player.actionVideoUrl}
+                          className={styles.playerCard__video}
+                          loop
+                          muted
+                          playsInline
+                        />
+                      )}
+
+                      <div className={styles.playerCard__stats}>
+                        {player.stats?.map((stat, i) => (
+                          <div key={i} className={styles.playerCard__statItem}>
+                            <span className={styles.playerCard__statLabel}>{stat.statName}</span>
+                            <span className={styles.playerCard__statValue}>{stat.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className={styles.playerCard__info}>
+                      <span className={styles.playerCard__number}>{player.number}</span>
+                      <div className={styles.playerCard__nameWrapper}>
+                        <h3 className={styles.playerCard__name}>{player.name}</h3>
+                        <span className={styles.playerCard__pos}>{player.position}</span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 };

@@ -6,6 +6,7 @@
   align-items: center;
   overflow: hidden;
   padding: 80px 0; // Space for fixed header
+  margin-top: 100px;
 
   &__glow {
     position: absolute;
@@ -96,34 +97,35 @@
       width: 40px;
       height: 2px;
       background: var(--color-pink);
-      box-shadow: 0 0 10px var(--color-pink);
     }
   }
 
   &__titleMain {
     // clamp keeps it huge on desktop but readable on mobile
-    font-size: clamp(3rem, 10vw, 7rem); 
+    font-size: clamp(5rem, 16vw, 13.5rem); 
     line-height: 0.9;
-    margin-bottom: 1rem;
+    font-weight: 300;
+    margin: 0;
     text-shadow: 0 0 30px rgba(247, 37, 133, 0.3);
   }
 
   &__titleAccent {
     color: var(--color-pink);
-    filter: drop-shadow(0 0 15px rgba(247, 37, 133, 0.6));
-    font-style: italic;
+    margin-left: clamp(2rem,4vw,4rem);
   }
 
   &__titleSmall {
     color: var(--text-gray-500);
-    letter-spacing: 0.3em; // Reduced slightly for mobile wrap
+    letter-spacing: .4em; // Reduced slightly for mobile wrap
     text-transform: uppercase;
-    font-size: 1.2rem;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
     margin-bottom: 2.5rem;
     display: flex;
     align-items: center;
     gap: 1rem;
     justify-content: center;
+    font-family: var(--font-display);
 
     @media (min-width: 992px) {
       justify-content: flex-start;
@@ -166,17 +168,11 @@
   }
 
   &__btn {
-    padding: 1rem 2rem;
+    padding: 0.75rem 1.75rem;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
     transition: all 0.3s ease;
-
-    @media (min-width: 992px) {
-        padding: 1rem 2.5rem;
-        font-size: 1rem;
-    }
 
     &:hover {
       transform: skewX(-5deg) translateY(-3px);
@@ -189,13 +185,7 @@
     display: flex;
     justify-content: center;
     position: relative;
-    width: 60%; // Smaller on mobile
-    max-width: 300px;
-
-    @media (min-width: 992px) {
-      width: 100%;
-      max-width: none;
-    }
+    max-width: 340px;
 
     &::before {
       content: "";

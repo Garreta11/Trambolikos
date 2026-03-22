@@ -26,12 +26,18 @@ const Partidos = () => {
     `}>
       {/* Left Column: Date */}
       <div className={styles.matches__columnLeft}>
-        <span className={styles.matches__day}>
-          {new Date(match.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
-        </span>
-        <span className={styles.matches__hour}>
-          {new Date(match.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
-        </span>
+        <p className={styles.matches__day}>
+          <span className={styles.matches__day__week}>
+            {new Date(match.date).toLocaleDateString('es-ES', { weekday: 'short' })}
+          </span>
+          <span className={styles.matches__day__number}>
+            {new Date(match.date).toLocaleDateString('es-ES', { day: '2-digit' })}
+          </span>
+          <span className={styles.matches__day__month}>
+            {new Date(match.date).toLocaleDateString('es-ES', { month: 'short' })}
+          </span>
+        </p>
+        
       </div>
       
       {/* Center Column: Teams & Score */}
@@ -57,9 +63,10 @@ const Partidos = () => {
 
       {/* Right Column: Status Tag */}
       <div className={styles.matches__columnRight}>
-        <span className={match.location === 'home' ? styles.matches__tagHome : styles.matches__tagAway}>
-          {match.location === 'home' ? 'Local' : 'Visitante'}
-        </span>
+        <p className={styles.matches__hour}>
+          {new Date(match.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+        </p>
+        <p className={styles.matches__location}>TARR Vall d'Hebron</p>
       </div>
     </div>
   );
@@ -69,11 +76,15 @@ const Partidos = () => {
       <div className={styles.matches__glow} />
       
       <div className={styles.matches__wrapper}>
-      <div className={styles.matches__section}>
+        <div className={`${styles.matches__section} ${styles.matches__section__history}`}>
           <header className={styles.matches__header}>
-            <h2 className={`${styles.matches__title}`}>
-            <span className={styles.matches__liveDot}></span> Resultados Recientes
-            </h2>
+          <div className={styles.matches__title}>
+              <div className={styles.matches__title__subtitle}>
+                <div className={styles.matches__title__subtitle__icon} />
+                Historial
+              </div>
+              <h2 className={styles.matches__title__text}>Resultados</h2>
+            </div>
           </header>
           <div className={styles.matches__grid}>
             {playedMatches.length > 0 ? (
@@ -83,14 +94,16 @@ const Partidos = () => {
             )}
           </div>
         </div>
-
-        <div className={styles.matches__divider}></div>
         
         <div className={styles.matches__section}>
           <header className={styles.matches__header}>
-            <h2 className={styles.matches__title}>
-              <span className={styles.matches__liveDot}></span> Próximos Encuentros
-            </h2>
+            <div className={styles.matches__title}>
+              <div className={styles.matches__title__subtitle}>
+                <div className={styles.matches__title__subtitle__icon} />
+                Calendario
+              </div>
+              <h2 className={styles.matches__title__text}>Próximos Partidos</h2>
+            </div>
           </header>
           <div className={styles.matches__grid}>
             {upcomingMatches.length > 0 ? (
