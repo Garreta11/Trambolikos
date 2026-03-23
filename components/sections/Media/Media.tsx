@@ -31,7 +31,10 @@ const Media = () => {
     <section className={styles.media} id="media">
       <header className={styles.media__header}>
         <div className={styles.media__titleGroup}>
-          <span className={styles.media__badge}>Trambolikos TV</span>
+          <div className={styles.media__subtitle}>
+            <div className={styles.media__subtitleIcon} />
+            Trambolikos TV
+          </div>
           <h2 className={styles.media__title}>{data.archiveTitle || "Archivo Multimedia"}</h2>
         </div>
         <div className={styles.media__controls}>

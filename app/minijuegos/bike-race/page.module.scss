@@ -1,12 +1,70 @@
 .page {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
   min-height: 100dvh;
-  width: 100vw;
-  gap: 20px;
+  padding: 20px; // Evita que pegue a los bordes en móvil
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    min-height: none;
+    padding: 7rem 20px;
+    display: block;
+  }
+
+  &__back {
+    margin-bottom: 20px;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--text-gray-500);
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      transition: color 0.2s ease;
+
+      &::before {
+        content: '';
+        display: block;
+        width: 1.5rem;
+        height: 1px;
+        background-color: currentColor;
+        transition: width 0.2s ease;
+      }
+
+      &:hover {
+        color: var(--color-pink);
+
+        &::before {
+          width: 2.5rem;
+        }
+      }
+    }
+  }
+  
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+  
+    // --- ADAPTACIÓN MÓVIL ---
+    @media (max-width: 768px) {
+      flex-direction: column; // Apila los elementos (Vertical)
+      gap: 30px;              // Un poco más de aire entre bloques
+      text-align: center;     // Centramos los textos para estética móvil
+  
+      // Si tienes elementos hijos, asegúrate de que ocupen el ancho
+      & > * {
+        width: 100%;
+        max-width: 400px; // Para que no se estiren infinito en tablets
+      }
+    }
+
   }
 }

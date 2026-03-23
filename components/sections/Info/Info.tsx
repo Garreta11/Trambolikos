@@ -22,10 +22,9 @@ const Info = () => {
     <section className={styles.info}>
       <div className={styles.info__container}>
         <div className={styles.info__content}>
-          <div className={styles.info__subtitleGroup}>
-            <div className={styles.info__line} />
-            <span className={styles.info__subtitle}>{info.subtitle}</span>
-            <div className={styles.info__line} />
+          <div className={styles.info__subtitle}>
+            <div className={styles.info__subtitleIcon} />
+            <span>{info.subtitle}</span>
           </div>
 
           <h1 className={styles.info__title}>{info.title}</h1>
@@ -47,9 +46,6 @@ const Info = () => {
           </div>
         </div>
       </div>
-      
-      {/* Elemento decorativo de fondo */}
-      <div className={styles.info__bgText}>TFC</div>
     </section>
   );
 };
