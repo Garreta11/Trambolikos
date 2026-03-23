@@ -27,7 +27,10 @@ const Info = () => {
             <span>{info.subtitle}</span>
           </div>
 
-          <h1 className={styles.info__title}>{info.title}</h1>
+          <h1
+            className={styles.info__title}
+            dangerouslySetInnerHTML={{ __html: info.title.replace(/\n/g, '<br/>') }}
+          />
           
           <div className={styles.info__details}>
             <p className={styles.info__description}>{info.description}</p>

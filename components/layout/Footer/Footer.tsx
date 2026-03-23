@@ -25,14 +25,15 @@ const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.footer__glow} />
-      
+      {/* <div className={styles.footer__wordmark} aria-hidden="true">TRAMBOLIKOS</div> */}
+
       <div className={styles.footer__container}>
         <div className={styles.footer__main}>
           
           {/* Brand Section */}
           <div className={styles.footer__brand}>
             <div className={styles.footer__logo}>        
-              <svg width="138" height="157" viewBox="0 0 138 157" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="35" height="40" viewBox="0 0 138 157" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_7_109)">
               <path d="M60.75 70.3901C60.82 70.4101 60.89 70.4301 60.96 70.4501C61.09 69.9501 61.23 69.4501 61.36 68.9501C61.28 68.9301 61.2 68.9101 61.12 68.8901C61 69.3901 60.87 69.9001 60.75 70.4001V70.3901Z" fill="#F72585"/>
               <path d="M98 59.1601C97.8 59.1001 97.52 59.3201 97.28 59.4101C97.45 59.6101 97.59 59.9001 97.8 59.9801C98.39 60.1801 99.02 60.2901 99.63 60.4401C102.39 61.0901 105.15 61.7401 107.91 62.3901C107.93 62.3601 107.95 62.3301 107.97 62.3001C106.48 61.7901 105 61.2601 103.5 60.7901C101.68 60.2201 99.84 59.6801 98 59.1701V59.1601Z" fill="#F72585"/>
@@ -146,12 +147,18 @@ const Footer = () => {
               Nacidos en el barro, destinados al neón.
             </p>
             <div className={styles.footer__socials}>
-              {['TikTok'].map((social) => (
-                <a key={social} target="_blank" href="https://www.tiktok.com/@trambosfc" className={styles.footer__socialLink}>
-                  <span className={styles.footer__socialDot}></span>
-                  {social}
-                </a>
-              ))}
+              <a href="https://www.tiktok.com/@trambosfc" target="_blank" rel="noopener noreferrer" className={styles.footer__socialLink}>
+                <span className={styles.footer__socialDot} />
+                TikTok
+              </a>
+              <a href="https://www.instagram.com/trambolikosfc" target="_blank" rel="noopener noreferrer" className={styles.footer__socialLink}>
+                <span className={styles.footer__socialDot} />
+                Instagram
+              </a>
+              <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" className={styles.footer__socialLink}>
+                <span className={styles.footer__socialDot} />
+                YouTube
+              </a>
             </div>
           </div>
 
@@ -171,19 +178,20 @@ const Footer = () => {
               <nav className={styles.footer__nav}>
                 <a href="#partidos" className={styles.footer__link} onClick={(e) => handleScrollTo(e, "partidos")}>Partidos</a>
                 <a href="#clasificación" className={styles.footer__link} onClick={(e) => handleScrollTo(e, "clasificación")}>Clasificación</a>
+                <a href="/minijuegos" className={styles.footer__link}>Minijuegos</a>
               </nav>
             </div>
           </div>
         </div>
 
         <div className={styles.footer__bottom}>
-          <div className={styles.footer__copyright}>
-            <p>© {currentYear} TRAMBOLIKOS FOOTBALL CLUB.</p>
-            <p className={styles.footer__legal}>ALL RIGHTS RESERVED. TRMB-INS-26</p>
-          </div>
-          <div className={styles.footer__madeBy}>
+          <p className={styles.footer__copyright}>
+            © {currentYear} TRAMBOLIKOS FC
+            <span className={styles.footer__legal}> — ALL RIGHTS RESERVED · TRMB-INS-26</span>
+          </p>
+          <p className={styles.footer__madeBy}>
             DESIGNED BY <span className={styles.footer__pinkText}>TRAMBOLIKOS STUDIO</span>
-          </div>
+          </p>
         </div>
       </div>
     </footer>
