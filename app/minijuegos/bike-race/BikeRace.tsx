@@ -7,6 +7,7 @@ import Race from "./Race";
 import { supabase } from '@/lib/supabase';
 import { AppContext } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
+import * as Tone from 'tone';
 
 const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
   const { username } = useContext(AppContext);
@@ -26,6 +27,146 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
 
   const userIdRef = useRef<string | null>(null);
   const gameIdRef = useRef<string | null>(null);
+
+  const melodySynthRef = useRef<Tone.Synth | null>(null);
+  const bassSynthRef = useRef<Tone.Synth | null>(null);
+  const melodySeqRef = useRef<Tone.Sequence | null>(null);
+  const bassSeqRef = useRef<Tone.Sequence | null>(null);
+
+  const startMusic = async () => {
+    await Tone.start();
+    Tone.getTransport().bpm.value = 160;
+
+    const melodySynth = new Tone.Synth({
+      oscillator: { type: 'square' },
+      envelope: { attack: 0.001, decay: 0.08, sustain: 0.3, release: 0.08 },
+      volume: -12,
+    }).toDestination();
+
+    const bassSynth = new Tone.Synth({
+      oscillator: { type: 'square' },
+      envelope: { attack: 0.001, decay: 0.15, sustain: 0.2, release: 0.1 },
+      volume: -18,
+    }).toDestination();
+
+    // Mario Kart-inspired 8-bar melody loop
+    const melodyNotes = [
+      'C5', 'E5', 'G5', 'C6',
+      'B5', 'G5', 'E5', 'G5',
+      'A5', 'F5', 'D5', 'F5',
+      'G5', 'E5', 'C5', null,
+      'C5', 'E5', 'G5', 'C6',
+      'B5', 'G5', 'E5', 'C5',
+      'D5', 'F5', 'A5', 'D6',
+      'C6', null, null, null,
+    ];
+
+    const bassNotes = [
+      'C3', null, 'G3', null,
+      'C3', null, 'G3', null,
+      'F3', null, 'C4', null,
+      'G3', null, null, null,
+      'C3', null, 'G3', null,
+      'C3', null, 'G3', null,
+      'D3', null, 'A3', null,
+      'G3', null, null, null,
+    ];
+
+    melodySeqRef.current = new Tone.Sequence((time, note) => {
+      if (note) melodySynth.triggerAttackRelease(note, '16n', time);
+    }, melodyNotes, '8n');
+
+    bassSeqRef.current = new Tone.Sequence((time, note) => {
+      if (note) bassSynth.triggerAttackRelease(note, '8n', time);
+    }, bassNotes, '8n');
+
+    melodySeqRef.current.loop = true;
+    bassSeqRef.current.loop = true;
+    melodySeqRef.current.start(0);
+    bassSeqRef.current.start(0);
+
+    melodySynthRef.current = melodySynth;
+    bassSynthRef.current = bassSynth;
+
+    Tone.getTransport().start();
+  };
+
+  const stopMusic = () => {
+    melodySeqRef.current?.stop();
+    bassSeqRef.current?.stop();
+    melodySeqRef.current?.dispose();
+    bassSeqRef.current?.dispose();
+    melodySynthRef.current?.dispose();
+    bassSynthRef.current?.dispose();
+    Tone.getTransport().stop();
+    Tone.getTransport().cancel();
+  };
+
+  const playFinishMusic = async () => {
+    await Tone.start();
+    stopMusic();
+
+    Tone.getTransport().bpm.value = 180;
+
+    const synth = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'square' },
+      envelope: { attack: 0.001, decay: 0.1, sustain: 0.4, release: 0.15 },
+      volume: -10,
+    }).toDestination();
+
+    // Victory fanfare: ascending triumphant melody, then celebration loop
+    const fanfare: [string, string, number][] = [
+      ['C4', '8n', 0],
+      ['C4', '8n', 150],
+      ['C4', '8n', 300],
+      ['C4', '4n', 450],
+      ['E4', '8n', 750],
+      ['G4', '8n', 900],
+      ['C5', '4n', 1050],
+      ['E5', '8n', 1350],
+      ['G5', '4n', 1500],
+      ['C6', '2n', 1750],
+    ];
+
+    fanfare.forEach(([note, dur, delay]) => {
+      setTimeout(() => synth.triggerAttackRelease(note, dur), delay);
+    });
+
+    // After fanfare, start a looping celebration melody
+    setTimeout(() => {
+      Tone.getTransport().bpm.value = 190;
+
+      const celebSynth = new Tone.Synth({
+        oscillator: { type: 'square' },
+        envelope: { attack: 0.001, decay: 0.08, sustain: 0.3, release: 0.08 },
+        volume: -11,
+      }).toDestination();
+
+      const celebNotes = [
+        'C5', 'E5', 'G5', 'E5',
+        'C6', 'G5', 'E5', 'C5',
+        'D5', 'F5', 'A5', 'F5',
+        'D6', 'A5', 'F5', 'D5',
+        'E5', 'G5', 'B5', 'G5',
+        'E6', 'B5', 'G5', 'E5',
+        'F5', 'A5', 'C6', 'A5',
+        'G5', 'C6', 'E6', null,
+      ];
+
+      const celebSeq = new Tone.Sequence((time, note) => {
+        if (note) celebSynth.triggerAttackRelease(note, '16n', time);
+      }, celebNotes, '8n');
+
+      celebSeq.loop = true;
+      celebSeq.start(0);
+      melodySeqRef.current = celebSeq;
+      melodySynthRef.current = celebSynth;
+
+      Tone.getTransport().start();
+    }, 2500);
+
+    setTimeout(() => synth.dispose(), 2500);
+  };
 
   useEffect(() => {
     if (!username) {
@@ -82,7 +223,10 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
       finalMessage: finalMessageRef.current,
       scoreboardRefs: scoreboardRefs.current,
       uiRace: uiRaceRef.current,
-      onFinish: (finalTime: number) => saveScore(finalTime)
+      onFinish: (finalTime: number) => {
+        saveScore(finalTime);
+        playFinishMusic();
+      }
     });
 
     // 2. Cargar NippleJS dinámicamente para evitar error de SSR
@@ -116,6 +260,7 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
     initJoystick();
 
     return () => {
+      stopMusic();
       if (joystickManager) joystickManager.destroy();
       if (raceRef.current?.renderer) {
         raceRef.current.renderer.dispose();
@@ -127,6 +272,7 @@ const BikeRace = ( { onScoreSaved }: { onScoreSaved: () => void } ) => {
 
   const handleStart = () => {
     if (raceRef.current) raceRef.current.startRace();
+    startMusic();
   };
 
   const addToScoreboardRefs = (el: HTMLDivElement | null) => {

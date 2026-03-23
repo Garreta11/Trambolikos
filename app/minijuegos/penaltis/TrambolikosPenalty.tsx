@@ -7,6 +7,55 @@ import styles from './TrambolikosPenalty.module.scss';
 import { supabase } from '@/lib/supabase';
 import { AppContext } from '@/context/AppContext';
 import { useRouter } from 'next/navigation';
+import * as Tone from 'tone';
+
+// --- Sonidos 8-bit Penaltis ---
+const playGoalSound = async () => {
+  await Tone.start();
+  const synth = new Tone.PolySynth(Tone.Synth, {
+    oscillator: { type: 'square' },
+    envelope: { attack: 0.001, decay: 0.12, sustain: 0.3, release: 0.2 },
+    volume: -8,
+  }).toDestination();
+
+  const melody: [string, string, number][] = [
+    ['E5', '16n', 0],
+    ['E5', '16n', 130],
+    ['E5', '16n', 260],
+    ['C5', '16n', 390],
+    ['E5', '8n', 520],
+    ['G5', '4n', 720],
+    ['G4', '4n', 1020],
+  ];
+
+  melody.forEach(([note, dur, delay]) => {
+    setTimeout(() => synth.triggerAttackRelease(note, dur), delay);
+  });
+
+  setTimeout(() => synth.dispose(), 2000);
+};
+
+const playGoalkeeperSound = async () => {
+  await Tone.start();
+  const synth = new Tone.Synth({
+    oscillator: { type: 'square' },
+    envelope: { attack: 0.001, decay: 0.2, sustain: 0.1, release: 0.3 },
+    volume: -8,
+  }).toDestination();
+
+  const melody: [string, string, number][] = [
+    ['G4', '8n', 0],
+    ['E4', '8n', 180],
+    ['C4', '8n', 360],
+    ['A3', '4n', 540],
+  ];
+
+  melody.forEach(([note, dur, delay]) => {
+    setTimeout(() => synth.triggerAttackRelease(note, dur), delay);
+  });
+
+  setTimeout(() => synth.dispose(), 1500);
+};
 
 type Direction = 'left' | 'center' | 'right';
 
@@ -216,19 +265,26 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
     const loader = new THREE.TextureLoader(manager);
     const textures: Record<string, THREE.Texture> = {};
 
-    ['ball.jpg', 'maiki.png'].forEach((file) => {
+    ['ball.jpg', 'maiki.png', 'graderia.jpg'].forEach((file) => {
       loader.load(`/minijuegos/penaltis/${file}`, (texture) => {
         texture.colorSpace = THREE.SRGBColorSpace;
         textures[file] = texture;
       });
     });
 
+    const graderia = new THREE.Mesh(
+      new THREE.PlaneGeometry(50, 10.44),
+      new THREE.MeshBasicMaterial()
+    );
+    graderia.position.set(0, 5, -10);
+    scene.add(graderia);
+
     const ball = new THREE.Mesh(new THREE.SphereGeometry(0.25, 32, 32), new THREE.MeshStandardMaterial());
     ball.position.set(INITIAL_BALL_POS.x, INITIAL_BALL_POS.y, INITIAL_BALL_POS.z);
     scene.add(ball);
 
     const keeper = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 3), new THREE.MeshStandardMaterial({transparent: true}));
+    const body = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshStandardMaterial({transparent: true}));
     body.position.y = 0.75;
     keeper.add(body);
     keeper.position.set(INITIAL_KEEPER_POS.x, INITIAL_KEEPER_POS.y, INITIAL_KEEPER_POS.z);
@@ -254,8 +310,10 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
       setIsLoaded(true);
       ball.material.map = textures['ball.jpg'];
       body.material.map = textures['maiki.png'];
+      graderia.material.map = textures['graderia.jpg'];
       ball.material.needsUpdate = true;
       body.material.needsUpdate = true;
+      graderia.material.needsUpdate = true;
       animate();
     };
 
@@ -293,7 +351,7 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
 
     const targets: Record<Direction, { x: number; y: number }> = {
       left: { x: -2.7, y: 1.1 },
-      center: { x: 0, y: 1.8 },
+      center: { x: 0, y: 1.1 },
       right: { x: 2.7, y: 1.1 },
     };
 
@@ -309,18 +367,10 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
     // Movimiento del balón (X y Z)
     tl.to(ball.position, {
       x: bT.x,
-      z: -5.1,
+      y: bT.y + 1.2,
+      z: -4,
       duration: 0.6,
       ease: "power2.in"
-    }, 0);
-
-    // Salto del balón (Y)
-    tl.to(ball.position, {
-      y: bT.y + 1.2,
-      duration: 0.3,
-      ease: "power2.out",
-      yoyo: true,
-      repeat: 1
     }, 0);
 
     // Rotación del balón
@@ -335,7 +385,7 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
 
     if (kId !== 'center') {
       tl.to(keeper.rotation, {
-        z: kId === 'left' ? 0.7 : -0.7,
+        z: kId === 'left' ? 0.4 : -0.4,
         duration: 0.45
       }, 0.1);
     }
@@ -347,6 +397,7 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
       setResultVisible(true);
 
       if (isGoal) {
+        playGoalSound();
         setGameState(prev => ({ 
           ...prev, streak: prev.streak + 1, 
           bestStreak: Math.max(prev.streak + 1, prev.bestStreak), 
@@ -357,6 +408,7 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
           setGameState(prev => ({ ...prev, isKicking: false, gamePhase: 'idle' }));
         }, 1500);
       } else {
+        playGoalkeeperSound();
         setGameState(prev => ({ ...prev, gamePhase: 'saved' }));
         saveScoreToSupabase(gameState.streak);
 
@@ -384,7 +436,6 @@ export default function TrambolikosPenalty({ onScoreSaved }: { onScoreSaved: () 
               <span className={styles['penalty__score-label']}>Tú racha: </span>
               <div className={styles['penalty__score-value']}>
                 <span className={styles['penalty__score-number']}>{gameState.streak}</span>
-                <span className={`${styles['penalty__flame']} ${gameState.streak > 0 ? styles['penalty__flame--active'] : ''}`}>🔥</span>
               </div>
             </div>
             <div className={styles['penalty__center']}>
