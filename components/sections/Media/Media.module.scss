@@ -29,30 +29,31 @@
     }
   }
 
-  &__badge {
-    color: var(--color-pink);
-    font-family: var(--font-display);
+  &__subtitle {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    letter-spacing: 0.2em; // Slightly tighter for mobile
-    font-size: 0.6rem;
-    font-weight: 800;
-    margin-bottom: 0.3rem;
-    display: block;
+    font-weight: 600;
+    font-size: 10px;
+    color: var(--color-pink);
+  }
 
-    @media (min-width: 992px) {
-      font-size: 0.7rem;
-      letter-spacing: 0.4em;
-      margin-bottom: 0.5rem;
-    }
+  &__subtitleIcon {
+    background-color: var(--color-pink);
+    width: 2rem;
+    height: 1px;
+    flex-shrink: 0;
   }
 
   &__title {
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 6vw, 2.5rem); // Fluid typography
-    font-weight: 800;
-    text-transform: uppercase;
     margin: 0;
-    letter-spacing: -0.02em;
+    line-height: 1;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-family: var(--font-display);
+    font-weight: 300;
   }
 
   &__controls {

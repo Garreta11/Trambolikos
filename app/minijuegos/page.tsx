@@ -99,8 +99,13 @@ const Minijuegos = () => {
 
   return (
     <div className={styles.minijuegos}>
+      <div className={styles.minijuegos__inner}>
       <header className={styles.minijuegos__header}>
-        <h1 className={styles.minijuegos__title}>ZONA GAMER</h1>
+        <div className={styles.minijuegos__subtitle}>
+          <div className={styles.minijuegos__subtitleIcon} />
+          Zona Gamer
+        </div>
+        <h1 className={styles.minijuegos__title}>Minijuegos</h1>
         {isRegistered && (
           <div className={styles.minijuegos__userBadge}>
             BIENVENIDO, <span>{username.toUpperCase()}</span>
@@ -116,26 +121,26 @@ const Minijuegos = () => {
             <div className={styles.loader}>CALENTANDO EN BANDA...</div>
           ) : (
             juegos.map((juego) => (
-              <Link 
-                href={`/minijuegos/${juego.slug}`} 
-                key={juego.id} 
+              <Link
+                href={`/minijuegos/${juego.slug}`}
+                key={juego.id}
                 className={styles.gameCard}
               >
                 <div className={styles.gameCard__imageWrapper}>
-                  <Image 
-                    src={juego.imagen_url || '/minijuegos/placeholder.jpg'} 
+                  <Image
+                    src={juego.imagen_url || '/minijuegos/placeholder.jpg'}
                     alt={juego.nombre}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className={styles.gameCard__image}
                   />
+                  <h3 className={styles.gameCard__name}>{juego.nombre}</h3>
                   <div className={styles.gameCard__overlay}>
-                    <span>VER RANKING Y JUGAR</span>
+                    <span>¡A JUGAR!</span>
                   </div>
                 </div>
-                
+
                 <div className={styles.gameCard__content}>
-                  <h3 className={styles.gameCard__name}>{juego.nombre}</h3>
                   <p className={styles.gameCard__desc}>{juego.descripcion}</p>
                 </div>
               </Link>
@@ -143,6 +148,7 @@ const Minijuegos = () => {
           )}
         </section>
       )}
+      </div>
     </div>
   );
 };
