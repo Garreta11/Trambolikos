@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   min-height: 100dvh;
-  padding: 20px; // Evita que pegue a los bordes en móvil
+  padding: 8rem 20px; // Evita que pegue a los bordes en móvil
 
   @media (max-width: 768px) {
     min-height: none;
@@ -49,8 +49,9 @@
   &__wrapper {
     display: flex;
     align-items: center;
+    flex-direction: column;
     justify-content: center;
-    gap: 20px;
+    gap: 4rem;
     width: 100%;
   
     // --- ADAPTACIÓN MÓVIL ---

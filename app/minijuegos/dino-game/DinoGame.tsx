@@ -6,6 +6,40 @@ import Image from 'next/image';
 import { AppContext } from '@/context/AppContext';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import * as Tone from 'tone';
+
+// --- Sonidos 8-bit ---
+const playJumpSound = () => {
+  const synth = new Tone.Synth({
+    oscillator: { type: 'square' },
+    envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 },
+    volume: -10,
+  }).toDestination();
+  synth.triggerAttackRelease('C5', '16n');
+  setTimeout(() => synth.dispose(), 500);
+};
+
+const playCrashSound = () => {
+  const synth = new Tone.PolySynth(Tone.Synth, {
+    oscillator: { type: 'square' },
+    envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.1 },
+    volume: -8,
+  }).toDestination();
+
+  const notes: [string, Tone.Unit.Time][] = [
+    ['C5', '16n'],
+    ['A4', '16n'],
+    ['F4', '16n'],
+    ['C4', '8n'],
+  ];
+
+  let delay = 0;
+  notes.forEach(([note, dur]) => {
+    setTimeout(() => synth.triggerAttackRelease(note, dur), delay);
+    delay += 120;
+  });
+  setTimeout(() => synth.dispose(), 1500);
+};
 
 // --- Interfaces y Tipos ---
 interface DinoState {
@@ -142,6 +176,7 @@ const DinoGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
 
   const handleGameOver = useCallback(() => {
     setGameState('GAME_OVER');
+    Tone.start().then(playCrashSound);
     setScore(currentScore => {
       // Importante: No esperes al render, dispara la función aquí
       saveScoreToSupabase(currentScore);
@@ -161,11 +196,11 @@ const DinoGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
   
     if (gameState === 'PLAYING') {
       // 👉 velocidad base + dificultad progresiva
-      speedRef.current += 0.000001;
+      speedRef.current += 0.0001;
   
       // 👉 velocidad visual SIEMPRE mínima
-      const BASE_MOVEMENT = 1;
-      const movementSpeed = BASE_MOVEMENT + speedRef.current * 2;
+      const BASE_MOVEMENT = 0.5;
+      const movementSpeed = BASE_MOVEMENT + speedRef.current * 1.5;
   
       setScore(prev => prev + Math.floor(speedRef.current * 2));
   
@@ -252,7 +287,7 @@ const DinoGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
   const startGame = () => {
     setGameState('PLAYING');
     setScore(0);
-    speedRef.current = 1;
+    speedRef.current = 0.8;
     obstaclesRef.current = [];
     cloudsRef.current = [];
     dinoRef.current = { y: 0, dy: 0, width: 44, height: 47 };
@@ -264,7 +299,8 @@ const DinoGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space' || e.code === 'ArrowUp') {
         if (gameState === 'PLAYING' && dinoRef.current.y === 0) {
-          dinoRef.current.dy = -12;
+          dinoRef.current.dy = -16;
+          Tone.start().then(playJumpSound);
         } else if (gameState !== 'PLAYING') {
           startGame();
         }
@@ -292,7 +328,8 @@ const DinoGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
   const handleJump = useCallback(() => {
     if (gameState === 'PLAYING') {
       if (dinoRef.current.y === 0) {
-        dinoRef.current.dy = -12;
+        dinoRef.current.dy = -16;
+        Tone.start().then(playJumpSound);
       }
     } else {
       startGame();
@@ -403,7 +440,7 @@ const DinoGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
 
 // --- Iconos ---
 const WildPorkIcon: React.FC<{ isDead: boolean }> = ({ isDead }) => (
-  <Image src="/minijuegos/dino-game/wildpork1.png" alt="Dino" width={44} height={44} />
+  <Image src="/minijuegos/dino-game/wildpork1.png" alt="Dino" width={60} height={60} />
 );
 
 const ValentinaIcon: React.FC = () => (
