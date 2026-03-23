@@ -189,7 +189,7 @@ const Header = () => {
               </clipPath>
               </defs>
             </svg>
-            TRAMBOLIKOS
+            TRAMBOLIKOS <span className={styles.nav__logoTextPink}>FC</span>
           </div>
         </div>
 
