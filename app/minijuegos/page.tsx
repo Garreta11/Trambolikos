@@ -74,6 +74,39 @@ const RegisterForm = () => {
   );
 };
 
+const GameCard = ({ juego }: { juego: Juego }) => {
+  const [descOpen, setDescOpen] = useState(false);
+
+  return (
+    <div className={styles.gameCard}>
+      <Link href={`/minijuegos/${juego.slug}`} className={styles.gameCard__imageWrapper}>
+        <Image
+          src={juego.imagen_url || '/minijuegos/placeholder.jpg'}
+          alt={juego.nombre}
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className={styles.gameCard__image}
+        />
+        <div className={styles.gameCard__overlay}>
+          <p className={styles.gameCard__desc}>{juego.descripcion}</p>
+          <span>¡A JUGAR!</span>
+        </div>
+      </Link>
+
+      <div className={styles.gameCard__content}>
+        <h3 className={styles.gameCard__name}>{juego.nombre}</h3>
+        <button
+          className={styles.gameCard__infoBtn}
+          onClick={() => setDescOpen(o => !o)}
+          aria-label="Ver descripción"
+        >
+          {descOpen ? 'i' : 'i'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const Minijuegos = () => {
   const { isRegistered, username } = useContext(AppContext);
   const [juegos, setJuegos] = useState<Juego[]>([]);
@@ -121,29 +154,7 @@ const Minijuegos = () => {
             <div className={styles.loader}>CALENTANDO EN BANDA...</div>
           ) : (
             juegos.map((juego) => (
-              <Link
-                href={`/minijuegos/${juego.slug}`}
-                key={juego.id}
-                className={styles.gameCard}
-              >
-                <div className={styles.gameCard__imageWrapper}>
-                  <Image
-                    src={juego.imagen_url || '/minijuegos/placeholder.jpg'}
-                    alt={juego.nombre}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className={styles.gameCard__image}
-                  />
-                  <h3 className={styles.gameCard__name}>{juego.nombre}</h3>
-                  <div className={styles.gameCard__overlay}>
-                    <span>¡A JUGAR!</span>
-                  </div>
-                </div>
-
-                <div className={styles.gameCard__content}>
-                  <p className={styles.gameCard__desc}>{juego.descripcion}</p>
-                </div>
-              </Link>
+              <GameCard key={juego.id} juego={juego} />
             ))
           )}
         </section>

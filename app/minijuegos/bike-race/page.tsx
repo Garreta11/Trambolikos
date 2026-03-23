@@ -3,6 +3,7 @@ import styles from './page.module.scss';
 import { useState } from 'react';
 import BikeRace from './BikeRace';
 import Leaderboard from '@/components/ui/Leaderboard/Leaderboard';
+import Link from 'next/link';
 
 const BikeRacePage = () => {
   const [leaderboardKey, setLeaderboardKey] = useState(0);
@@ -13,8 +14,15 @@ const BikeRacePage = () => {
 
   return (
     <div className={styles.page}>
-      <BikeRace onScoreSaved={handleNewRecord} />
-      <Leaderboard key={leaderboardKey} gameName="bike-race" reverse={true} />
+      <div className={styles.page__back}>
+        <Link href="/minijuegos" >
+          Ir a minijuegos
+        </Link>
+      </div>
+      <div className={styles.page__wrapper}>
+        <BikeRace onScoreSaved={handleNewRecord} />
+        <Leaderboard key={leaderboardKey} gameName="bike-race" reverse={true} />
+      </div>
     </div>
   )
 };

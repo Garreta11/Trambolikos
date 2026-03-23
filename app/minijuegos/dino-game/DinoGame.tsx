@@ -164,7 +164,7 @@ const DinoGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
       speedRef.current += 0.000001;
   
       // 👉 velocidad visual SIEMPRE mínima
-      const BASE_MOVEMENT = 3;
+      const BASE_MOVEMENT = 1;
       const movementSpeed = BASE_MOVEMENT + speedRef.current * 2;
   
       setScore(prev => prev + Math.floor(speedRef.current * 2));
