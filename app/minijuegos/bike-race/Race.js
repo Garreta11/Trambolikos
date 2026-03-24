@@ -69,9 +69,6 @@ export default class Race {
 
     this.hasSavedScore = false;
 
-    this.width = this.container.clientWidth;
-    this.height = this.container.clientHeight;
-
     // Puntos de la ruta (Path) para definir el circuito
     this.pathPoints = [
       new THREE.Vector3(0, 0, 0),
@@ -127,6 +124,9 @@ export default class Race {
   }
 
   init() {
+    this.width = this.container.clientWidth;
+    this.height = this.container.clientHeight;
+
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x1d317c);
     this.scene.fog = new THREE.Fog(0x0e1a45, 60, 250);
