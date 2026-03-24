@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import styles from './Leaderboard.module.scss';
+import { ConfigResolutionError } from 'sanity';
 
 interface Leader {
   username: string;
@@ -26,6 +27,7 @@ const Leaderboard: React.FC<{ gameName: string, reverse?: boolean }> = ({ gameNa
         .order('score', { ascending: reverse })
         .limit(8); // Mostramos un poco más para que luzca el diseño
 
+      console.log(data)
       if (data) {
         setLeaders(data.map((item: any) => ({
           username: item.usuarios?.username || 'ANÓNIMO',

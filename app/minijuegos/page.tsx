@@ -88,7 +88,10 @@ const GameCard = ({ juego }: { juego: Juego }) => {
           className={styles.gameCard__image}
         />
         <div className={styles.gameCard__overlay}>
-          <p className={styles.gameCard__desc}>{juego.descripcion}</p>
+          <p
+            className={styles.gameCard__desc}
+            dangerouslySetInnerHTML={{ __html: juego.descripcion }}
+          />
           <span>¡A JUGAR!</span>
         </div>
       </Link>
