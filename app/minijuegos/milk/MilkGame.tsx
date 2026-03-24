@@ -133,6 +133,14 @@ const MilkGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
           <span className={styles['milk__bar-tag']}>EDU</span>
         </div>
 
+        <button
+          className={styles.milk__drinkBtn}
+          onTouchStart={() => milkRef.current?.drink()}
+          onClick={() => milkRef.current?.drink()}
+        >
+          🥛 BEBER
+        </button>
+
         <div className={styles.milk__footer}>
           <p className={styles.milk__hint}>
             ESPACIO · beber leche · 30 segundos
@@ -142,6 +150,7 @@ const MilkGame: React.FC<{ onScoreSaved: () => void }> = ({ onScoreSaved }) => {
 
       {/* Canvas Three.js */}
       <div ref={mountRef} className={styles.milk__canvas} />
+
     </div>
   );
 };
