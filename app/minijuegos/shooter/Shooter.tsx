@@ -370,7 +370,7 @@ export default function Shooter({ onScoreSaved }: { onScoreSaved?: () => void })
 
             <button
               className={styles.startBtn}
-              onClick={(e) => { e.stopPropagation(); if (isMobile) handleStartMobile(); }}
+              onClick={(e) => { e.stopPropagation(); if (isMobile) handleStartMobile(); else handleClick(); }}
             >
               {isMobile ? 'Iniciar misión' : 'Entrar en combate'}
             </button>
