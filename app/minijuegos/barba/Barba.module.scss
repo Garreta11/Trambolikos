@@ -1,0 +1,423 @@
+// =============================================================================
+// Barba.module.scss — Trambolikos FC
+// =============================================================================
+
+@keyframes barba-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(247, 37, 133, 0.4), 0 0 20px rgba(247, 37, 133, 0.2); }
+  50%       { box-shadow: 0 0 0 8px rgba(247, 37, 133, 0.6), 0 0 40px rgba(247, 37, 133, 0.4); }
+}
+
+@keyframes target-ping {
+  0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.7; }
+  100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(20px) skewX(-5deg); }
+  to   { opacity: 1; transform: translateY(0)    skewX(-5deg); }
+}
+
+@keyframes score-pop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  70%  { transform: scale(1.1); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+// =============================================================================
+// Container
+// =============================================================================
+
+.barba {
+  position: relative;
+  width: 80vw;
+  max-width: 1100px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #050505;
+  border: 3px solid var(--color-border);
+  user-select: none;
+  cursor: crosshair;
+
+  @media (max-width: 768px) {
+    width: 95vw;
+    aspect-ratio: 4 / 5;
+  }
+
+  // Pink top-left corner accent (matches DinoGame style)
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px;
+    width: 40px; height: 40px;
+    border-top: 3px solid var(--color-pink);
+    border-left: 3px solid var(--color-pink);
+    z-index: 50;
+    pointer-events: none;
+  }
+
+  // ==========================================================================
+  // Background & vignette
+  // ==========================================================================
+
+  &__bg {
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  &__vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 40%,
+      rgba(0, 0, 0, 0.65) 100%
+    );
+    pointer-events: none;
+  }
+
+  // ==========================================================================
+  // Target zone
+  // ==========================================================================
+
+  &__target {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    border: 3px dashed var(--color-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: barba-pulse 1.5s ease-in-out infinite;
+    pointer-events: none;
+
+    // Ping ring effect
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid var(--color-gold);
+      animation: target-ping 1.5s ease-out infinite;
+      pointer-events: none;
+    }
+
+    &--frozen {
+      border-color: var(--color-pink);
+      animation: none;
+      box-shadow: 0 0 0 4px rgba(247, 37, 133, 0.5), 0 0 30px rgba(247, 37, 133, 0.3);
+
+      &::after { display: none; }
+    }
+  }
+
+  &__targetLabel {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--color-gold);
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+  }
+
+  // ==========================================================================
+  // Moving barba sprite
+  // ==========================================================================
+
+  &__sprite {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 15;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.7));
+    pointer-events: none;
+    will-change: transform, left, top;
+
+    img {
+      display: block;
+    }
+
+    &--frozen {
+      filter: drop-shadow(0 0 12px var(--color-pink)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.7));
+    }
+  }
+
+  // ==========================================================================
+  // HUD
+  // ==========================================================================
+
+  &__hud {
+    position: absolute;
+    top: 1.25rem;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0 1.5rem;
+    pointer-events: none;
+  }
+
+  &__hudRound {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0.4rem 0.9rem;
+    backdrop-filter: blur(8px);
+
+    span {
+      color: var(--color-gold);
+      font-family: var(--font-mega);
+      font-size: 1.2rem;
+    }
+  }
+
+  &__hudScore {
+    font-family: var(--font-mega);
+    font-size: 1.5rem;
+    color: var(--color-pink);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0.4rem 0.9rem;
+    backdrop-filter: blur(8px);
+    text-shadow: 0 0 12px rgba(247, 37, 133, 0.4);
+    letter-spacing: 1px;
+  }
+
+  // ==========================================================================
+  // Instructions strip
+  // ==========================================================================
+
+  &__instructions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem 1rem;
+    pointer-events: none;
+
+    b { color: rgba(255, 255, 255, 0.6); }
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  // ==========================================================================
+  // Mobile tap button
+  // ==========================================================================
+
+  &__tapBtn {
+    display: none;
+    position: absolute;
+    bottom: 3.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 40;
+    background: var(--color-gold);
+    color: #000;
+    font-family: var(--font-mega);
+    font-size: 1.3rem;
+    border: none;
+    padding: 0.9rem 2.5rem;
+    clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+    cursor: pointer;
+    box-shadow: 0 6px 0 #b08d00;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+
+    &:active {
+      transform: translateX(-50%) translateY(4px);
+      box-shadow: 0 2px 0 #b08d00;
+    }
+
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+
+  // ==========================================================================
+  // Shared overlay base
+  // ==========================================================================
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: rgba(5, 5, 5, 0.3);
+    /* backdrop-filter: blur(6px); */
+    text-align: center;
+    padding: 2rem;
+    
+    &--result {
+      flex-direction: row;
+      align-items: flex-end;
+      background: rgba(5, 5, 5, 0.3);
+      pointer-events: auto;
+    }
+
+    &--finished {
+      background: rgba(5, 5, 5, 0.92);
+      border: 2px solid var(--color-pink);
+    }
+  }
+
+  // ==========================================================================
+  // START overlay content
+  // ==========================================================================
+
+  &__overlaySub {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--color-pink);
+    margin: 0;
+    border-left: 3px solid var(--color-pink);
+    padding-left: 0.75rem;
+  }
+
+  &__overlayTitle {
+    font-family: var(--font-mega);
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: var(--text-white);
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 0.9;
+    text-shadow:
+      4px 4px 0 var(--color-pink-dark),
+      8px 8px 0 #000;
+    transform: skewX(-5deg);
+    animation: slide-in 0.4s ease forwards;
+  }
+
+  &__overlayDesc {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.65);
+    max-width: 380px;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  &__overlayHint {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.3);
+    margin: 0;
+
+    b { color: rgba(255, 255, 255, 0.6); }
+  }
+
+  // ==========================================================================
+  // RESULT overlay content
+  // ==========================================================================
+
+  &__resultLabel {
+    font-family: var(--font-mega);
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: score-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+
+    &[data-color='gold']  { color: var(--color-gold);  text-shadow: 0 0 20px rgba(255, 214, 10, 0.5); }
+    &[data-color='white'] { color: var(--text-white); }
+    &[data-color='pink']  { color: var(--color-pink);  text-shadow: 0 0 20px rgba(247, 37, 133, 0.5); }
+  }
+
+  &__resultScore {
+    font-family: var(--font-mega);
+    font-size: clamp(4rem, 14vw, 8rem);
+    color: var(--text-white);
+    line-height: 1;
+    text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+    animation: score-pop 0.5s 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  }
+
+  &__resultSub {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0;
+  }
+
+  // ==========================================================================
+  // FINISHED overlay content
+  // ==========================================================================
+
+  &__finalScore {
+    font-family: var(--font-mega);
+    font-size: clamp(5rem, 18vw, 10rem);
+    color: var(--color-gold);
+    line-height: 1;
+    text-shadow:
+      4px 4px 0 var(--color-pink-dark),
+      0 0 40px rgba(255, 214, 10, 0.4);
+    animation: score-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  &__finalMax {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.35);
+    margin: 0;
+  }
+
+  &__finalRating {
+    font-family: var(--font-mega);
+    font-size: 1.8rem;
+    color: var(--color-pink);
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  // ==========================================================================
+  // Shared button
+  // ==========================================================================
+
+  &__btn {
+    margin-top: 0.5rem;
+    background: var(--color-pink);
+    color: #fff;
+    border: none;
+    padding: 14px 40px;
+    font-size: 1.1rem;
+    font-family: var(--font-mega);
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+    transition: all 0.2s ease;
+    letter-spacing: 1px;
+
+    &:hover {
+      background: var(--color-pink-light);
+      transform: scale(1.08) skewX(-3deg);
+      box-shadow: 0 0 20px rgba(247, 37, 133, 0.5);
+    }
+  }
+}
