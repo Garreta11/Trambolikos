@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1, "name": "Carlos", "number": 4,
+    "hairColor": "dark", "hairLength": "short",
+    "beard": true, "glasses": false, "hat": false,
+    "position": "defensa", "age": 28, "eyeColor": "dark"
+  },
+  {
+    "id": 2, "name": "Marco", "number": 8,
+    "hairColor": "light", "hairLength": "short",
+    "beard": false, "glasses": false, "hat": false,
+    "position": "centrocampista", "age": 24, "eyeColor": "light"
+  },
+  {
+    "id": 3, "name": "Luis", "number": 1,
+    "hairColor": "bald", "hairLength": null,
+    "beard": true, "glasses": false, "hat": false,
+    "position": "portero", "age": 34, "eyeColor": "dark"
+  },
+  {
+    "id": 4, "name": "Javi", "number": 11,
+    "hairColor": "dark", "hairLength": "short",
+    "beard": false, "glasses": true, "hat": false,
+    "position": "delantero", "age": 22, "eyeColor": "dark"
+  },
+  {
+    "id": 5, "name": "Pablo", "number": 6,
+    "hairColor": "dark", "hairLength": "long",
+    "beard": true, "glasses": false, "hat": false,
+    "position": "centrocampista", "age": 27, "eyeColor": "dark"
+  },
+  {
+    "id": 6, "name": "Andrés", "number": 2,
+    "hairColor": "light", "hairLength": "short",
+    "beard": true, "glasses": false, "hat": false,
+    "position": "defensa", "age": 31, "eyeColor": "light"
+  },
+  {
+    "id": 7, "name": "Miguel", "number": 9,
+    "hairColor": "dark", "hairLength": "short",
+    "beard": false, "glasses": false, "hat": false,
+    "position": "delantero", "age": 19, "eyeColor": "dark"
+  },
+  {
+    "id": 8, "name": "Sergio", "number": 5,
+    "hairColor": "bald", "hairLength": null,
+    "beard": false, "glasses": true, "hat": false,
+    "position": "centrocampista", "age": 35, "eyeColor": "dark"
+  },
+  {
+    "id": 9, "name": "Rubén", "number": 3,
+    "hairColor": "dark", "hairLength": "long",
+    "beard": true, "glasses": true, "hat": false,
+    "position": "defensa", "age": 26, "eyeColor": "dark"
+  },
+  {
+    "id": 10, "name": "Toni", "number": 10,
+    "hairColor": "light", "hairLength": "long",
+    "beard": false, "glasses": false, "hat": true,
+    "position": "delantero", "age": 23, "eyeColor": "light"
+  },
+  {
+    "id": 11, "name": "Iker", "number": 13,
+    "hairColor": "dark", "hairLength": "short",
+    "beard": true, "glasses": false, "hat": false,
+    "position": "portero", "age": 32, "eyeColor": "dark"
+  },
+  {
+    "id": 12, "name": "Fran", "number": 7,
+    "hairColor": "dark", "hairLength": "short",
+    "beard": false, "glasses": false, "hat": false,
+    "position": "centrocampista", "age": 20, "eyeColor": "dark"
+  },
+  {
+    "id": 13, "name": "Dani", "number": 14,
+    "hairColor": "light", "hairLength": "short",
+    "beard": true, "glasses": false, "hat": true,
+    "position": "defensa", "age": 29, "eyeColor": "light"
+  },
+  {
+    "id": 14, "name": "Xavi", "number": 15,
+    "hairColor": "bald", "hairLength": null,
+    "beard": false, "glasses": false, "hat": false,
+    "position": "delantero", "age": 38, "eyeColor": "dark"
+  },
+  {
+    "id": 15, "name": "Edu", "number": 16,
+    "hairColor": "dark", "hairLength": "short",
+    "beard": false, "glasses": true, "hat": false,
+    "position": "centrocampista", "age": 25, "eyeColor": "dark"
+  }
+]
